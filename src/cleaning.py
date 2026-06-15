@@ -18,7 +18,7 @@ def clean_text_cols(df):
     for col in text_cols:
         df[col] = df[col].astype(str).str.strip()
 
-    df["event"] = df["event"].str.lower()
+    # df["event"] = df["event"].str.lower()
 
     return df
 

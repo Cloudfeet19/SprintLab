@@ -1,0 +1,160 @@
+{% extends "base.html" %}
+
+{% block title %}Add Result | SprintLab{% endblock %}
+
+{% block content %}
+
+<section class="section">
+    <div class="container">
+
+        <div class="section-header">
+            <div class="eyebrow">Result Entry</div>
+            <h2>Add Athlete Result</h2>
+            <p>
+                Enter a performance result and SprintLab will store it for athlete tracking,
+                PR detection, event progression, and future dashboard analysis.
+            </p>
+        </div>
+
+        <div class="form-card">
+            <form method="POST" action="{{ url_for('add_result') }}" novalidate>
+                {{ form.hidden_tag() }}
+
+                <div class="form-grid two-column">
+                    <div class="form-group">
+                        {{ form.first_name.label(class="form-label") }}
+                        {{ form.first_name(class="form-control", placeholder="Ava") }}
+                        {% for error in form.first_name.errors %}
+                            <div class="field-error">{{ error }}</div>
+                        {% endfor %}
+                    </div>
+
+                    <div class="form-group">
+                        {{ form.last_name.label(class="form-label") }}
+                        {{ form.last_name(class="form-control", placeholder="Miller") }}
+                        {% for error in form.last_name.errors %}
+                            <div class="field-error">{{ error }}</div>
+                        {% endfor %}
+                    </div>
+                </div>
+
+                <div class="form-grid three-column">
+                    <div class="form-group">
+                        {{ form.gender.label(class="form-label") }}
+                        {{ form.gender(class="form-select") }}
+                        {% for error in form.gender.errors %}
+                            <div class="field-error">{{ error }}</div>
+                        {% endfor %}
+                    </div>
+
+                    <div class="form-group">
+                        {{ form.grade.label(class="form-label") }}
+                        {{ form.grade(class="form-select") }}
+                        {% for error in form.grade.errors %}
+                            <div class="field-error">{{ error }}</div>
+                        {% endfor %}
+                    </div>
+
+                    <div class="form-group">
+                        {{ form.athlete_class.label(class="form-label") }}
+                        {{ form.athlete_class(class="form-select") }}
+                        {% for error in form.athlete_class.errors %}
+                            <div class="field-error">{{ error }}</div>
+                        {% endfor %}
+                    </div>
+                </div>
+
+                <hr class="form-divider">
+
+                <div class="form-grid two-column">
+                    <div class="form-group">
+                        {{ form.event.label(class="form-label") }}
+                        {{ form.event(class="form-select") }}
+                        {% for error in form.event.errors %}
+                            <div class="field-error">{{ error }}</div>
+                        {% endfor %}
+                    </div>
+
+                    <div class="form-group">
+                        {{ form.result.label(class="form-label") }}
+                        {{ form.result(class="form-control", placeholder="11.42, 2:05.31, 17-2, 36'5.5") }}
+                        <div class="form-text">
+                            Use seconds for sprints, mm:ss for distance, or feet-inches for jumps.
+                        </div>
+                        {% for error in form.result.errors %}
+                            <div class="field-error">{{ error }}</div>
+                        {% endfor %}
+                    </div>
+                </div>
+
+                <div class="form-grid three-column">
+                    <div class="form-group">
+                        {{ form.wind.label(class="form-label") }}
+                        {{ form.wind(class="form-control", placeholder="+1.2") }}
+                        {% for error in form.wind.errors %}
+                            <div class="field-error">{{ error }}</div>
+                        {% endfor %}
+                    </div>
+
+                    <div class="form-group">
+                        {{ form.placement.label(class="form-label") }}
+                        {{ form.placement(class="form-control", placeholder="1") }}
+                        {% for error in form.placement.errors %}
+                            <div class="field-error">{{ error }}</div>
+                        {% endfor %}
+                    </div>
+
+                    <div class="form-group">
+                        {{ form.date.label(class="form-label") }}
+                        {{ form.date(class="form-control") }}
+                        {% for error in form.date.errors %}
+                            <div class="field-error">{{ error }}</div>
+                        {% endfor %}
+                    </div>
+                </div>
+
+                <div class="form-grid three-column">
+                    <div class="form-group">
+                        {{ form.atmosphere.label(class="form-label") }}
+                        {{ form.atmosphere(class="form-select") }}
+                        {% for error in form.atmosphere.errors %}
+                            <div class="field-error">{{ error }}</div>
+                        {% endfor %}
+                    </div>
+
+                    <div class="form-group">
+                        {{ form.race_type.label(class="form-label") }}
+                        {{ form.race_type(class="form-select") }}
+                        {% for error in form.race_type.errors %}
+                            <div class="field-error">{{ error }}</div>
+                        {% endfor %}
+                    </div>
+
+                    <div class="form-group">
+                        {{ form.performance_type.label(class="form-label") }}
+                        {{ form.performance_type(class="form-select") }}
+                        {% for error in form.performance_type.errors %}
+                            <div class="field-error">{{ error }}</div>
+                        {% endfor %}
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    {{ form.meet.label(class="form-label") }}
+                    {{ form.meet(class="form-control", placeholder="Tuscaloosa Invitational") }}
+                    {% for error in form.meet.errors %}
+                        <div class="field-error">{{ error }}</div>
+                    {% endfor %}
+                </div>
+
+                <div class="form-actions">
+                    {{ form.submit(class="btn btn-primary") }}
+                    <a href="{{ url_for('home') }}" class="btn btn-secondary">Cancel</a>
+                </div>
+            </form>
+        </div>
+
+    </div>
+</section>
+
+{% endblock %}

@@ -1,4 +1,23 @@
 import pandas as pd
+from forms.forms import TRACK_EVENTS, FIELD_EVENTS
+
+
+def get_season(date, atmosphere: str) -> str:
+    """
+    :param date: result date
+    :param atmosphere: result atmosphere
+    :return: season based on the date of the result and atmosphere of the result
+    """
+    season_year = date.year
+    month = date.month
+
+    if atmosphere.lower() == "indoor" and month in [11, 12]:
+        season_year += 1
+
+    season = f"{season_year} {atmosphere}"
+
+    return season
+
 
 def add_features(df: pd.DataFrame) -> pd.DataFrame:
     """
@@ -10,8 +29,8 @@ def add_features(df: pd.DataFrame) -> pd.DataFrame:
     :return: returns the updates dataframe
     """
     # Apply classification of events and establish what direction determines a better result
-    df["event_type"] = df["event"].apply(_classify_event).astype("category")
-    df["better_direction"] = df["event_type"].apply(_better_direction).astype("category")
+    df["event_type"] = df["event"].apply(classify_event).astype("category")
+    df["better_direction"] = df["event_type"].apply(better_direction).astype("category")
 
     # Universal Results Column
     df["result_value"] = df["result_in_seconds"].fillna(df["result_in_meters"])
@@ -19,7 +38,7 @@ def add_features(df: pd.DataFrame) -> pd.DataFrame:
     # updates the temporary df with is_pr, current_pr, and improvement column
     pr_df = (
         df.groupby(["athlete_id", "event"], group_keys=False, observed=True)
-          .apply(_detect_pr_progression)
+          .apply(detect_pr_progression)
     )
 
     # Return elements to their original index so that adding them to the original df is correct
@@ -31,23 +50,23 @@ def add_features(df: pd.DataFrame) -> pd.DataFrame:
     return df
 
 # Classify Event
-def _classify_event(event: str) -> str:
+def classify_event(event: str) -> str:
     """
     :param event: event that is being classified
     :return: classification of event
     """
-    track_events = ["60m", "60mh", "100m", "100mh", "110mh", "200m", "300mh", "400m", "800m", "1600m", "3200m"]
-    field_events = ["long jump", "triple jump", "high jump", "javelin", "pole vault", "shot put", "discus"]
+    # track_events = ["60m", "60mh", "100m", "100mh", "110mh", "200m", "300mh", "400m", "800m", "1600m", "3200m"]
+    # field_events = ["long jump", "triple jump", "high jump", "javelin", "pole vault", "shot put", "discus"]
 
-    if event in track_events:
+    if event in TRACK_EVENTS:
         return "track"
-    elif event in field_events:
+    elif event in FIELD_EVENTS:
         return "field"
     else:
         return "other"
 
 # Better Direction Logic
-def _better_direction(event_type: str) -> str:
+def better_direction(event_type: str) -> str:
     """
     :param event_type: field or track event
     :return: determines what direction is considered a better result
@@ -61,7 +80,7 @@ def _better_direction(event_type: str) -> str:
         return "unknown"
 
 # Sort dataframe by athlete, event, and date
-def _detect_pr_progression(athlete_event_dataset: pd.DataFrame):
+def detect_pr_progression(athlete_event_dataset: pd.DataFrame):
     """
     Determines if a result in the dataframe is a personal best based on previous results
     Captures the current PR

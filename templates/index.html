@@ -1,0 +1,60 @@
+{% extends "base.html" %}
+
+{% block title %}SprintLab | Home{% endblock %}
+
+{% block content %}
+<section class="py-5">
+    <div class="row align-items-center">
+        <div class="col-lg-8">
+            <h1 class="display-5 fw-bold">SprintLab</h1>
+            <p class="lead">
+                Athlete performance analytics and coaching intelligence platform.
+            </p>
+            <p class="text-muted">
+                Track results, monitor progression, identify personal records,
+                evaluate event strengths, and turn athlete performance data into coaching insights.
+            </p>
+
+            <div class="mt-4">
+                <a href="{{ url_for('add_result') }}" class="btn btn-primary btn-lg me-2">Add Result</a>
+                <a href="#" class="btn btn-outline-secondary btn-lg">View Dashboard</a>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="row g-4">
+    <div class="col-md-4">
+        <div class="card h-100 shadow-sm">
+            <div class="card-body">
+                <h5 class="card-title">Result Entry</h5>
+                <p class="card-text">
+                    Add athlete performances with structured fields to reduce data-entry errors.
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-4">
+        <div class="card h-100 shadow-sm">
+            <div class="card-body">
+                <h5 class="card-title">Athlete Dashboards</h5>
+                <p class="card-text">
+                    View progression charts, current PRs, medal counts, and athlete summaries.
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-4">
+        <div class="card h-100 shadow-sm">
+            <div class="card-body">
+                <h5 class="card-title">Event Intelligence</h5>
+                <p class="card-text">
+                    Rank coached events by competitive performance, development, and outcomes.
+                </p>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}l>
