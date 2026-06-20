@@ -73,7 +73,10 @@ def add_result():
         result.raw_result = form.result.data
         result.result_in_seconds = result_in_seconds(form.result.data, classify_event(str(form.event.data)))
         result.result_in_inches = results_in_inches(form.result.data, classify_event(str(form.event.data)))
-        result.result_in_meters = round(result_in_meters(result.result_in_inches), 2)
+        if result.result_in_inches:
+            result.result_in_meters = result_in_meters(result.result_in_inches)
+        else:
+            result.result_in_meters = None
         result.wind = form.wind.data
         result.placement = form.placement.data
         result.date = form.date.data
