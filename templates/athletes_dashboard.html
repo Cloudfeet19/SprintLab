@@ -1,0 +1,157 @@
+{% extends "base.html" %}
+
+{% block title %}SprintLab | Athlete Dashboard{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <div>
+        <h1 class="fw-bold">Athlete Dashboard</h1>
+        <p class="text-muted mb-0">Select an athlete and event to view performance insights.</p>
+    </div>
+
+    <a href="{{ url_for('add_result') }}" class="btn btn-primary">
+        Add Result
+    </a>
+</div>
+
+{% if not athletes %}
+    <div class="card shadow-sm border-0">
+        <div class="card-body text-center py-5">
+            <h3 class="fw-bold">No athletes available yet</h3>
+            <p class="text-muted">
+                Add your first athlete result to start building performance dashboards.
+            </p>
+            <a href="{{ url_for('add_result') }}" class="btn btn-primary btn-lg">
+                Add First Result
+            </a>
+        </div>
+    </div>
+{% else %}
+
+    <form method="GET" action="{{ url_for('athletes_dashboard') }}" class="card shadow-sm border-0 mb-4">
+        <div class="card-body">
+            <div class="row g-3 align-items-end">
+                <div class="col-md-5">
+                    <label class="form-label fw-semibold">Athlete</label>
+                    <select name="athlete_id" class="form-select" onchange="this.form.submit()">
+                        {% for athlete in athletes %}
+                            <option value="{{ athlete.id }}"
+                                {% if selected_athlete and athlete.id == selected_athlete.id %}selected{% endif %}>
+                                {{ athlete.name }}
+                            </option>
+                        {% endfor %}
+
+                        <option value="" {% if not selected_athlete_id %}selected{% endif %}>
+                            Select an athlete
+                        </option>
+                    </select>
+                </div>
+
+                <div class="col-md-5">
+                    <label class="form-label fw-semibold">Event</label>
+                        <select name="event" class="form-select" onchange="this.form.submit()">
+                            {% if not selected_athlete_id %}
+                                <option value="">Select an athlete first</option>
+                            {% else %}
+                                {% for event in events %}
+                                    <option value="{{ event }}" {% if selected_event == event %}selected{% endif %}>
+                                        {{ event|title }}
+                                    </option>
+                                {% endfor %}
+                            {% endif %}
+                        </select>
+                </div>
+
+                <div class="col-md-2 d-grid">
+                    <button type="submit" class="btn btn-dark">
+                        View
+                    </button>
+                </div>
+            </div>
+        </div>
+    </form>
+
+    {% if selected_athlete %}
+        <div class="mb-4">
+            <h2 class="fw-bold mb-1">{{ selected_athlete.name }}</h2>
+            <p class="text-muted mb-0">
+                Event: {{ selected_event|title }}
+            </p>
+        </div>
+
+        {% if summary %}
+            <div class="row g-3 mb-4">
+                <div class="col-md-3">
+                    <div class="card shadow-sm border-0">
+                        <div class="card-body">
+                            <p class="text-muted mb-1">Total Performances</p>
+                            <h3 class="fw-bold">{{ summary.total_performances }}</h3>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-3">
+                    <div class="card shadow-sm border-0">
+                        <div class="card-body">
+                            <p class="text-muted mb-1">Total PRs</p>
+                            <h3 class="fw-bold">{{ summary.total_prs }}</h3>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-3">
+                    <div class="card shadow-sm border-0">
+                        <div class="card-body">
+                            <p class="text-muted mb-1">Medals</p>
+                            <h3 class="fw-bold">{{ summary.total_medal_count }}</h3>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-3">
+                    <div class="card shadow-sm border-0">
+                        <div class="card-body">
+                            <p class="text-muted mb-1">Current PR</p>
+                            <h3 class="fw-bold">{{ current_pr or "N/A" }}</h3>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        {% endif %}
+
+        {% if chart_html %}
+            <div class="card shadow-sm border-0 mb-4">
+                <div class="card-body">
+                    {{ chart_html|safe }}
+                </div>
+            </div>
+        {% else %}
+            <div class="alert alert-warning">
+                No chart data available for this athlete/event selection.
+            </div>
+        {% endif %}
+
+        {% if pr_chart_html %}
+            <div class="card shadow-sm border-0 mb-4">
+                <div class="card-body">
+                    {{ pr_chart_html|safe }}
+                </div>
+            </div>
+        {% endif %}
+
+        {% if medal_count_html %}
+            <div class="card shadow-sm border-0 mb-4">
+                <div class="card-body">
+                    {{ medal_count_html|safe }}
+                </div>
+            </div>
+        {% endif %}
+
+    {% else %}
+        <div class="alert alert-info">
+            Select an athlete and event to generate a dashboard.
+        </div>
+    {% endif %}
+
+{% endif %}
+{% endblock %}
