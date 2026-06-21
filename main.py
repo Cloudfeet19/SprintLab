@@ -90,7 +90,14 @@ def add_result():
     form = ResultForm()
 
     if form.validate_on_submit():
-        athlete = query_athlete(form)
+        selected_athlete_id = request.args.get("athlete_id")
+
+        if selected_athlete_id == "new":
+            athlete = create_new_athlete(form)
+        else:
+            athlete = db.session.get(
+                AthleteTable, int(selected_athlete_id)
+            )
 
         result = ResultTable()
         result.event = form.event.data
