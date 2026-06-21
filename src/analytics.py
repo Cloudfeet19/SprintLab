@@ -26,7 +26,7 @@ def athletes_summary(df: pd.DataFrame, athlete_id: int) -> dict:
 
     event_df = athlete_df.groupby("event", as_index=False, observed=True)
 
-    current_prs = _get_prs(event_df) # Grabs the current prs
+    current_prs = get_prs(event_df) # Grabs the current prs
 
     main_events = _get_main_event(athlete_df) # Grabs a ranked dictionary determined by average placement per event
 
@@ -56,7 +56,11 @@ def _get_main_event(athlete_df) -> list:
 
     return best_events
 
-def _get_prs(event_df):
+def get_prs(event_df):
+    """
+    :param event_df: Receives an athlete and event grouped df
+    :return: Returns the pr of the passed in group
+    """
     current_prs = {}
 
     for event_key, performance in event_df:
@@ -103,6 +107,84 @@ def ranking_coached_events(df):
     ])
 
     return ranked_events_df
+
+def get_coaches_complete_event_summary(df: pd.DataFrame, event) -> dict:
+    """
+    :return: returns a dictionary showcasing the complete coaches summary of the selected event
+    """
+    df = df[df["event"] == event]
+
+    df_male = df[df["gender"] == "Male"]
+    male_summary = _coaches_event_summary(df_male)
+
+    df_female = df[df["gender"] == "Female"]
+    female_summary = _coaches_event_summary(df_female)
+
+    summary = _coaches_event_summary(df)
+
+    complete_summary = {
+        "complete_summary": summary,
+        "male_summary": male_summary,
+        "female_summary": female_summary
+    }
+
+    return complete_summary
+
+
+def _coaches_event_summary(df: pd.DataFrame) -> dict:
+    if df.empty:
+        return {
+            "event": None,
+            "total_performances": 0,
+            "medal_count": 0,
+            "pr_count": 0,
+            "state_medal_count": 0
+        }
+
+    # Complete summary info
+    event = df["event"].iloc[0]
+    total_performances = df.raw_result.count()
+    medal_count = _get_medal_count(df)
+    pr_count = len(df[df["is_pr"] == True])
+    state_df = df[df["meet"].str.lower().str.contains("state", na=False)] # grabs all state performances
+    state_medal_count = _get_medal_count(state_df)
+
+    if df["better_direction"].iloc[0] == "lower":
+        best_result = df[df["result_value"] == df.result_value.min()]
+    elif df["better_direction"].iloc[0] == "higher":
+        best_result = df[df["result_value"] == df.result_value.max()]
+    else:
+        best_result = None
+
+    summary = {
+        "event": event,
+        "total_performances": total_performances,
+        "medal_count": medal_count,
+        "pr_count": pr_count,
+        "state_medal_count": state_medal_count,
+        "best_result": best_result
+    }
+
+    return summary
+
+
+def _get_medal_count(df: pd.DataFrame) -> dict:
+    """
+    :return: returns a dictionary of medal count for the given dataframe
+    """
+    medal_count = {
+        "gold_medal_count": df["placement"].isin([1]).sum(),
+        "silver_medal_count": df["placement"].isin([2]).sum(),
+        "bronze_medal_count": df["placement"].isin([3]).sum(),
+        "total_medal_count": df["placement"].isin([1]).sum() + df["placement"].isin([2]).sum() + df["placement"].isin([3]).sum()
+    }
+
+    return medal_count
+
+
+
+
+
 
 
 

@@ -1,0 +1,197 @@
+{% extends "base.html" %}
+
+{% block title %}SprintLab | Event Dashboard{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <div>
+        <h1 class="fw-bold">Event Dashboard</h1>
+        <p class="text-muted mb-0">Select an event to view program-wide coaching insights.</p>
+    </div>
+
+    <a href="{{ url_for('add_result') }}" class="btn btn-primary">
+        Add Result
+    </a>
+</div>
+
+{% if not events %}
+    <div class="card shadow-sm border-0">
+        <div class="card-body text-center py-5">
+            <h3 class="fw-bold">No event data available yet</h3>
+            <p class="text-muted">Add results to start building event dashboards.</p>
+
+            <a href="{{ url_for('add_result') }}" class="btn btn-primary btn-lg">
+                Add First Result
+            </a>
+        </div>
+    </div>
+{% else %}
+
+    <form method="GET" action="{{ url_for('event_dashboard') }}" class="card shadow-sm border-0 mb-4">
+        <div class="card-body">
+            <div class="row g-3 align-items-end">
+                <div class="col-md-10">
+                    <label class="form-label fw-semibold">Event</label>
+                    <select name="event" class="form-select" onchange="this.form.submit()">
+                        <option value="" {% if not selected_event %}selected{% endif %}>
+                            Select an event
+                        </option>
+
+                        {% for event in events %}
+                            <option value="{{ event }}"
+                                {% if selected_event == event %}selected{% endif %}>
+                                {{ event|title }}
+                            </option>
+                        {% endfor %}
+                    </select>
+                </div>
+
+                <div class="col-md-2 d-grid">
+                    <button type="submit" class="btn btn-dark">View</button>
+                </div>
+            </div>
+        </div>
+    </form>
+
+    {% if selected_event %}
+        <div class="mb-4">
+            <h2 class="fw-bold">{{ selected_event|title }}</h2>
+            <p class="text-muted mb-0">Program-wide event analytics across all athletes.</p>
+        </div>
+
+        {% if summary %}
+            {% set complete = summary["complete_summary"] %}
+            {% set male = summary["male_summary"] %}
+            {% set female = summary["female_summary"] %}
+
+            <div class="row g-3 mb-4">
+                <div class="col-md-3">
+                    <div class="card shadow-sm border-0">
+                        <div class="card-body">
+                            <p class="text-muted mb-1">Total Performances</p>
+                            <h3 class="fw-bold">{{ complete["total_performances"] }}</h3>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-3">
+                    <div class="card shadow-sm border-0">
+                        <div class="card-body">
+                            <p class="text-muted mb-1">Total Medals</p>
+                            <h3 class="fw-bold">{{ complete["medal_count"]["total_medal_count"] }}</h3>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-3">
+                    <div class="card shadow-sm border-0">
+                        <div class="card-body">
+                            <p class="text-muted mb-1">Total PRs</p>
+                            <h3 class="fw-bold">{{ complete["pr_count"] }}</h3>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-3">
+                    <div class="card shadow-sm border-0">
+                        <div class="card-body">
+                            <p class="text-muted mb-1">State Medals</p>
+                            <h3 class="fw-bold">{{ complete["state_medal_count"]["total_medal_count"] }}</h3>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row g-3 mb-4">
+                <div class="col-md-6">
+                    <div class="card shadow-sm border-0">
+                        <div class="card-body">
+                            <h5 class="fw-bold">Male Summary</h5>
+                            <p class="mb-1">Performances: {{ male["total_performances"] }}</p>
+                            <p class="mb-1">Medals: {{ male["medal_count"]["total_medal_count"] }}</p>
+                            <p class="mb-1">PRs: {{ male["pr_count"] }}</p>
+                            <p class="mb-0">State Medals: {{ male["state_medal_count"]["total_medal_count"] }}</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-6">
+                    <div class="card shadow-sm border-0">
+                        <div class="card-body">
+                            <h5 class="fw-bold">Female Summary</h5>
+                            <p class="mb-1">Performances: {{ female["total_performances"] }}</p>
+                            <p class="mb-1">Medals: {{ female["medal_count"]["total_medal_count"] }}</p>
+                            <p class="mb-1">PRs: {{ female["pr_count"] }}</p>
+                            <p class="mb-0">State Medals: {{ female["state_medal_count"]["total_medal_count"] }}</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        {% endif %}
+
+        {% if all_medal_chart %}
+            <div class="card shadow-sm border-0 mb-4">
+                <div class="card-body">
+                    <h3 class="fw-bold">Complete Medal Chart</h3>
+                    <p class="text-muted">All medals earned in {{ selected_event|title }}.</p>
+                    {{ all_medal_chart|safe }}
+                </div>
+            </div>
+        {% endif %}
+
+        <div class="row g-4 mb-4">
+            {% if male_medal_chart %}
+                <div class="card shadow-sm border-0 mb-4">
+                    <div class="card-body">
+                        <h3 class="fw-bold">Male Medal Chart</h3>
+                        <p class="text-muted">Male medals earned in {{ selected_event|title }}.</p>
+                        {{ male_medal_chart|safe }}
+                    </div>
+                </div>
+            {% endif %}
+
+            {% if female_medal_chart %}
+                <div class="card shadow-sm border-0 mb-4">
+                    <div class="card-body">
+                        <h3 class="fw-bold">Female Medal Chart</h3>
+                        <p class="text-muted">Female medals earned in {{ selected_event|title }}.</p>
+                        {{ female_medal_chart|safe }}
+                    </div>
+                </div>
+            {% endif %}
+
+            {% if male_event_ranking_chart %}
+                <div class="card shadow-sm border-0 mb-4">
+                    <div class="card-body">
+                        <h3 class="fw-bold">Male {{selected_event|title}} Chart</h3>
+                        <p class="text-muted">Male {{ selected_event|title }} rankings chart.</p>
+                        {{ male_event_ranking_chart|safe }}
+                    </div>
+                </div>
+            {% endif %}
+
+            {% if female_event_ranking_chart %}
+                <div class="card shadow-sm border-0 mb-4">
+                    <div class="card-body">
+                        <h3 class="fw-bold">Female {{selected_event|title}} Chart</h3>
+                        <p class="text-muted">Female {{ selected_event|title }} rankings chart.</p>
+                        {{ female_event_ranking_chart|safe }}
+                    </div>
+                </div>
+            {% endif %}
+        </div>
+
+        {% if not all_medal_chart and not male_medal_chart and not female_medal_chart %}
+            <div class="alert alert-warning">
+                No medal chart data available for this event yet.
+            </div>
+        {% endif %}
+
+    {% else %}
+        <div class="alert alert-info">
+            Select an event to generate the event dashboard.
+        </div>
+    {% endif %}
+
+{% endif %}
+{% endblock %}

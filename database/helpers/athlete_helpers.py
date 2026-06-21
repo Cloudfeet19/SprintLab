@@ -52,6 +52,32 @@ def results_in_inches(result:str, event_type: str) -> float:
 def result_in_meters(inches: float) -> float:
     return round(inches * 0.0254, 2)
 
+def get_best_results(groups):
+    """
+    :param groups: Takes a gender and event filtered set of grouped dataframes
+    :return: Returns the data of the best result from each grouped dataframe
+    """
+    if not groups:
+        return None
 
+    best_results = []
+
+    for group in groups:
+        dataset = group[1]
+        name = dataset["name"].iloc[0]
+        if dataset["better_direction"].iloc[0] == "lower":
+            best_result = dataset.result_value.min()
+        elif dataset["better_direction"].iloc[0] == "higher":
+            best_result = dataset.result_value.max()
+        else:
+            best_result = None
+
+        result_data = {
+            "name": name,
+            "best_result": best_result
+        }
+
+        best_results.append(result_data)
+    return best_results
 
 

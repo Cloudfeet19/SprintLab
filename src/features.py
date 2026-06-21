@@ -1,7 +1,6 @@
 import pandas as pd
 from forms.forms import TRACK_EVENTS, FIELD_EVENTS
 
-
 def get_season(date, atmosphere: str) -> str:
     """
     :param date: result date
@@ -17,7 +16,6 @@ def get_season(date, atmosphere: str) -> str:
     season = f"{season_year} {atmosphere}"
 
     return season
-
 
 def add_features(df: pd.DataFrame) -> pd.DataFrame:
     """

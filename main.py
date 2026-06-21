@@ -15,14 +15,15 @@ from flask_login import UserMixin, login_user, LoginManager, current_user, logou
 from werkzeug.security import generate_password_hash, check_password_hash
 
 from database.models import db, ResultTable, AthleteTable
-from database.helpers.athlete_helpers import query_athlete, result_in_seconds, results_in_inches, result_in_meters
+from database.helpers.athlete_helpers import query_athlete, result_in_seconds, results_in_inches, result_in_meters, get_best_results
 
-from forms.forms import ResultForm
+from forms.forms import ResultForm, ALL_EVENTS, TRACK_EVENTS, FIELD_EVENTS
 
 from src.cleaning import clean_data
 from src.features import add_features, get_season, classify_event
-from src.analytics import athletes_summary, ranking_coached_events
-from src.charts import athlete_event_result_chart, coaching_event_rankings_chart, medal_count_chart, current_pr_progression_chart
+from src.analytics import athletes_summary, ranking_coached_events, get_coaches_complete_event_summary
+from src.charts import athlete_event_result_chart, coach_event_rankings_chart, athlete_medal_count_chart, current_pr_progression_chart
+from src.charts import event_medal_count_chart, ranked_event_bar_chart
 
 load_dotenv()
 
@@ -83,7 +84,7 @@ def initialize_dataset(db) -> pd.DataFrame:
 def home():
     return render_template("index.html")
 
-# Complete
+# Complete -- May need upgrading
 @app.route("/add-result", methods=["GET", "POST"])
 def add_result():
     form = ResultForm()
@@ -121,8 +122,10 @@ def add_result():
 
 @app.route("/athletes")
 def athletes():
-    return render_template("athletes.html")
+    athletes = db.session.execute(AthleteTable).scalars().all()
+    return render_template("athletes.html", athletes=athletes)
 
+# Complete -- May need upgrading
 @app.route("/athletes_dashboard")
 def athletes_dashboard():
     # Grabs all athletes for the dropdown
@@ -169,7 +172,7 @@ def athletes_dashboard():
             pr_chart = current_pr_progression_chart(df, selected_athlete_id, selected_event)
             pr_chart_html = pr_chart.to_html(full_html=False)
 
-            medal_count = medal_count_chart(df, selected_athlete_id)
+            medal_count = athlete_medal_count_chart(df, selected_athlete_id)
             medal_count_html = medal_count.to_html(full_html=False)
 
             summary = athletes_summary(df, selected_athlete_id)
@@ -193,9 +196,90 @@ def athletes_dashboard():
 def events():
     return render_template("events.html")
 
-@app.route("/event_dashboard/<event_name>")
-def event_dashboard(event_name):
-    return render_template("event_dashboard.html", event_name=event_name)
+@app.route("/event_dashboard")
+def event_dashboard():
+    selected_event = request.args.get("event")
+    summary = {}
+    all_medal_chart = None
+    male_medal_chart = None
+    female_medal_chart = None
+    male_event_ranking_chart = None
+    female_event_ranking_chart = None
+
+
+    if selected_event:
+        # Initialize pandas dataframe from sql database
+        df = initialize_dataset(db)
+
+        # grabs the summary to display in the html for the selected event
+        summary = get_coaches_complete_event_summary(df, selected_event)
+
+        # the combined medal chart for the selected event, male and female
+        all_medal_chart = event_medal_count_chart(df, selected_event)
+        all_medal_chart = all_medal_chart.to_html(full_html=False, config={"responsive": True}) if all_medal_chart else None
+
+        # male medal chart only for the selected event
+        male_df = df[df["gender"] == "Male"]
+        male_medal_chart = event_medal_count_chart(male_df, selected_event)
+        male_medal_chart = male_medal_chart.to_html(full_html=False, config={"responsive": True}) if male_medal_chart else None
+
+        # filters and groups the data by event and gender
+        event_filtered_male_df = male_df[male_df["event"] == selected_event]
+        male_grouped_df = event_filtered_male_df.groupby(["athlete_id"], as_index=False, observed=True)
+
+        # gets the best result from each group of data passed in
+        male_best_results = get_best_results(male_grouped_df)
+
+        # sorts the data / flips the chart if it is a field event
+        if male_best_results:
+            male_sorted_best_result_data = sorted(male_best_results, key=lambda result_data: result_data["best_result"])
+            if selected_event in FIELD_EVENTS:
+                male_sorted_best_result_data = sorted(male_best_results, key=lambda result_data: result_data["best_result"], reverse=True)
+
+
+        # charts the data and prepares it to be sent to the HTML file
+        male_event_ranking_chart = ranked_event_bar_chart(male_sorted_best_result_data, selected_event)
+        male_event_ranking_chart = male_event_ranking_chart.to_html(full_html=False,
+                                                        config={"responsive": True}) if male_event_ranking_chart else None
+
+        ####################################################
+        # female medal chart for the selected event
+        female_df = df[df["gender"] == "Female"]
+        female_medal_chart = event_medal_count_chart(female_df, selected_event)
+        female_medal_chart = female_medal_chart.to_html(full_html=False, config={"responsive": True}) if female_medal_chart else None
+
+        # filters and groups the data by event and gender
+        event_filtered_female_df = female_df[female_df["event"] == selected_event]
+        female_grouped_df = event_filtered_female_df.groupby(["athlete_id"], as_index=False, observed=True)
+
+        # gets the best result from each group of data passed in
+        female_best_results = get_best_results(female_grouped_df)
+
+        female_sorted_best_result_data = None
+
+        # sorts the data / flips the chart if it is a field event
+        if female_best_results:
+            female_sorted_best_result_data = sorted(female_best_results, key=lambda result_data: result_data["best_result"])
+            if selected_event in FIELD_EVENTS:
+                female_sorted_best_result_data = sorted(female_best_results, key=lambda result_data: result_data["best_result"], reverse=True)
+
+            # charts the data and prepares it to be sent to the HTML file
+            female_event_ranking_chart = ranked_event_bar_chart(female_sorted_best_result_data, selected_event)
+            female_event_ranking_chart = female_event_ranking_chart.to_html(full_html=False,
+                                                                            config={"responsive": True}) if female_event_ranking_chart else None
+
+
+    return render_template(
+        "event_dashboard.html",
+        events=ALL_EVENTS,
+        selected_event=selected_event,
+        summary=summary,
+        all_medal_chart=all_medal_chart,
+        male_medal_chart=male_medal_chart,
+        female_medal_chart=female_medal_chart,
+        male_event_ranking_chart=male_event_ranking_chart,
+        female_event_ranking_chart=female_event_ranking_chart
+    )
 
 @app.route("/compare")
 def compare():

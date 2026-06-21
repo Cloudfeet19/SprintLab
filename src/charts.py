@@ -1,8 +1,6 @@
 import pandas as pd
 import plotly.express as px
-import seaborn as sns
-import matplotlib.pyplot as plt
-
+from forms.forms import TRACK_EVENTS, FIELD_EVENTS
 def athlete_event_result_chart(df: pd.DataFrame, athlete_id: int, event: str) -> px.line:
     """
     :param df: master dataframe
@@ -83,7 +81,7 @@ def current_pr_progression_chart(df: pd.DataFrame, athlete_id: int, event: str) 
 
     return progression_line
 
-def medal_count_chart(df: pd.DataFrame, athlete_id: int) -> px.bar:
+def athlete_medal_count_chart(df: pd.DataFrame, athlete_id: int) -> px.bar:
     """
     :param df: Master df
     :param athlete_id: ID of the desired athlete
@@ -131,7 +129,63 @@ def medal_count_chart(df: pd.DataFrame, athlete_id: int) -> px.bar:
 
     return medal_chart
 
-def coaching_event_rankings_chart(ranked_events_df: pd.DataFrame) -> px.bar:
+def event_medal_count_chart(df: pd.DataFrame, event: str) -> px.bar:
+    """
+        :param df: Master df
+        :return: Bar chart showcasing all medals obtained in the event
+        """
+
+    # filters dataset to desired event
+    event_dataset = df[df["event"] == event]
+
+    # filters the dataset to all results that finished with a medal
+    medal_df = event_dataset[event_dataset["placement"].isin([1, 2, 3])].copy()
+
+    if medal_df.empty:
+        return None
+
+    # grabbing all medal placements
+    medal_counts = medal_df["placement"].value_counts().sort_index().reset_index()
+    medal_counts.columns = ["placement", "count"]
+
+    # creating label for future display purposes
+    medal_counts["label"] = medal_counts["count"].astype(str) + " medals"
+
+    # mapping the numerical value of a medal to a string value describing the placement of the result
+    medal_counts["placement"] = medal_counts["placement"].astype(str)
+    medal_counts["medal"] = medal_counts["placement"].map({
+        "1": "Gold",
+        "2": "Silver",
+        "3": "Bronze"
+    })
+
+    # creates the bar chart
+    medal_chart = px.bar(
+        medal_counts,
+        x="placement",
+        y="count",
+        color="medal",
+        color_discrete_map={
+            "Gold": "#FFD700",
+            "Silver": "#C0C0C0",
+            "Bronze": "#CE8946"
+        },
+        text="label"
+    )
+
+    medal_chart.update_xaxes(tickmode = "array", tickvals=[1,2,3])
+    medal_chart.update_yaxes(dtick=1, tickformat=',d')
+
+    medal_chart.update_layout(
+        height=450,
+        autosize=True,
+        margin=dict(l=40, r=40, t=30, b=40)
+    )
+
+    return medal_chart
+
+
+def coach_event_rankings_chart(ranked_events_df: pd.DataFrame) -> px.bar:
     """
     :param ranked_events_df: dataset with the average placement per event
     :return: bar chart showcasing the best placements on average for all coached athletes
@@ -163,3 +217,29 @@ def coaching_event_rankings_chart(ranked_events_df: pd.DataFrame) -> px.bar:
     ranking_bar.update_yaxes(title="Average Placement")
 
     return ranking_bar
+
+def ranked_event_bar_chart(best_results_data, event) -> px.bar:
+    if not best_results_data:
+        return None
+    ranked_bar_chart = px.bar(
+        best_results_data,
+        x="best_result",
+        y="name",
+        color="name",
+        orientation="h",
+    )
+
+    ranked_bar_chart.update_layout(
+        height=450,
+        autosize=True,
+        margin=dict(l=40, r=40, t=30, b=40)
+    )
+
+    if event in FIELD_EVENTS:
+        ranked_bar_chart.update_xaxes(title="Distance")
+
+    if event in TRACK_EVENTS:
+        ranked_bar_chart.update_xaxes(title="Time")
+
+    return ranked_bar_chart
+
