@@ -106,6 +106,18 @@
                 <div class="col-md-6">
                     <div class="card shadow-sm border-0">
                         <div class="card-body">
+                            <h5 class="fw-bold">Female Summary</h5>
+                            <p class="mb-1">Performances: {{ female["total_performances"] }}</p>
+                            <p class="mb-1">Medals: {{ female["medal_count"]["total_medal_count"] }}</p>
+                            <p class="mb-1">PRs: {{ female["pr_count"] }}</p>
+                            <p class="mb-0">State Medals: {{ female["state_medal_count"]["total_medal_count"] }}</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-6">
+                    <div class="card shadow-sm border-0">
+                        <div class="card-body">
                             <h5 class="fw-bold">Male Summary</h5>
                             <p class="mb-1">Performances: {{ male["total_performances"] }}</p>
                             <p class="mb-1">Medals: {{ male["medal_count"]["total_medal_count"] }}</p>
@@ -115,17 +127,6 @@
                     </div>
                 </div>
 
-                <div class="col-md-6">
-                    <div class="card shadow-sm border-0">
-                        <div class="card-body">
-                            <h5 class="fw-bold">Female Summary</h5>
-                            <p class="mb-1">Performances: {{ female["total_performances"] }}</p>
-                            <p class="mb-1">Medals: {{ female["medal_count"]["total_medal_count"] }}</p>
-                            <p class="mb-1">PRs: {{ female["pr_count"] }}</p>
-                            <p class="mb-0">State Medals: {{ female["state_medal_count"]["total_medal_count"] }}</p>
-                        </div>
-                    </div>
-                </div>
             </div>
         {% endif %}
 

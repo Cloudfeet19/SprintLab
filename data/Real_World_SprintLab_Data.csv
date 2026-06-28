@@ -1,0 +1,102 @@
+Athlete_ID,Name,Gender,Grade,Athlete_Class,Event,Raw_Result,Result_In_Seconds,Result_In_Inches,Result_In_Meters,Wind,Placement,Date,Meet,Atmosphere,Race_Type,Season,Performance_Type
+1,Harley McNeal,Female,11,2024,400m,56.46,56.46,,,,1,2023-03-04,Southern Miss High School Invitational,Outdoor,Finals,2023 Outdoor,Official
+1,Harley McNeal,Female,11,2024,400m,54.97,54.97,,,,1,2023-04-15,Mountain Brook Invitational,Outdoor,Finals,2023 Outdoor,Official
+1,Harley McNeal,Female,11,2024,400m,55.25,55.25,,,,1,2023-04-29,AHSAA 6A - Section 3 - Northridge,Outdoor,Finals,2023 Outdoor,Official
+1,Harley McNeal,Female,11,2024,400m,58.23,58.23,,,,2,2023-05-06,AHSAA State Track and Field 4A-7A,Outdoor,Finals,2023 Outdoor,Official
+1,Harley McNeal,Female,11,2024,200m,24.95,24.95,,,,1,2023-02-25,Northridge - Black & Blue Invitational,Outdoor,Finals,2023 Outdoor,Official
+1,Harley McNeal,Female,11,2024,200m,24.9,24.9,,,,1,2023-03-19,Homewood Invitational,Outdoor,Finals,2023 Outdoor,Official
+1,Harley McNeal,Female,11,2024,200m,24.85,24.85,,,,1,2023-03-25,Northridge - Jaguar Invitational,Outdoor,Finals,2023 Outdoor,Official
+1,Harley McNeal,Female,11,2024,200m,25.16,25.16,,,-0.1,2,2023-04-14,Mountain Brook Invitational,Outdoor,Prelims,2023 Outdoor,Official
+1,Harley McNeal,Female,11,2024,200m,24.24,24.24,,,0.5,1,2023-04-15,Mountain Brook Invitational,Outdoor,Finals,2023 Outdoor,Official
+1,Harley McNeal,Female,11,2024,200m,24.6,24.6,,,,1,2023-04-28,AHSAA 6A - Section 3 - Northridge,Outdoor,Prelims,2023 Outdoor,Official
+1,Harley McNeal,Female,11,2024,200m,25,25,,,,1,2023-04-29,AHSAA 6A - Section 3 - Northridge,Outdoor,Finals,2023 Outdoor,Official
+1,Harley McNeal,Female,11,2024,200m,24.67,24.67,,,1.4,3,2023-05-06,AHSAA State Track and Field 4A-7A,Outdoor,Finals,2023 Outdoor,Official
+1,Harley McNeal,Female,11,2024,200m,24.71,24.71,,,1.2,20,2023-06-18,Nike Outdoor Nationals,Outdoor,Prelims,2023 Outdoor,Official
+1,Harley McNeal,Female,11,2024,200m,24.36,24.36,,,1.1,1,2023-06-24,"USATF JO, Open, and Masters",Outdoor,Finals,2023 Outdoor,Official
+1,Harley McNeal,Female,11,2024,200m,24.81,24.81,,,,1,2023-07-09,USATF Region 6 Junior Olympics Championships,Outdoor,Finals,2023 Outdoor,Official
+1,Harley McNeal,Female,11,2024,100m,12.33,12.33,,,,2,2023-02-25,Northridge - Black & Blue Invitational,Outdoor,Finals,2023 Outdoor,Official
+1,Harley McNeal,Female,11,2024,100m,12.36,12.36,,,,2,2023-03-18,Homewood Invitational,Outdoor,Finals,2023 Outdoor,Official
+1,Harley McNeal,Female,11,2024,100m,12.53,12.53,,,,1,2023-03-25,Northridge - Jaguar Invitational,Outdoor,Finals,2023 Outdoor,Official
+1,Harley McNeal,Female,11,2024,100m,11.93,11.93,,,,1,2023-04-28,AHSAA 6A - Section 3 - Northridge,Outdoor,Prelims,2023 Outdoor,Official
+1,Harley McNeal,Female,11,2024,100m,12.26,12.26,,,,1,2023-04-29,AHSAA 6A - Section 3 - Northridge,Outdoor,Finals,2023 Outdoor,Official
+1,Harley McNeal,Female,11,2024,100m,12.16,12.16,,,2.5,7,2023-05-04,AHSAA State Track and Field 4A-7A,Outdoor,Prelims,2023 Outdoor,Official
+1,Harley McNeal,Female,11,2024,100m,12.09,12.09,,,1.6,4,2023-05-06,AHSAA State Track and Field 4A-7A,Outdoor,Finals,2023 Outdoor,Official
+1,Harley McNeal,Female,11,2024,100m,12.32,12.32,,,2.4,21,2023-06-15,Nike Outdoor Nationals,Outdoor,Prelims,2023 Outdoor,Official
+1,Harley McNeal,Female,11,2024,100m,11.93,11.93,,,1.7,1,2023-06-24,"USATF JO, Open, and Masters",Outdoor,Finals,2023 Outdoor,Official
+1,Harley McNeal,Female,11,2024,100m,12.3,12.3,,,,1,2023-07-07,USATF Region 6 Junior Olympics Championships,Outdoor,Finals,2023 Outdoor,Official
+1,Harley McNeal,Female,12,2024,400m,59.69,59.69,,,,3,2024-04-26,AHSAA 6A - Section 3 - Northridge,Outdoor,Finals,2024 Outdoor,Official
+1,Harley McNeal,Female,12,2024,200m,26.21,26.21,,,-4.2,2,2024-04-26,AHSAA 6A - Section 3 - Northridge,Outdoor,Prelims,2024 Outdoor,Official
+1,Harley McNeal,Female,12,2024,200m,25.81,25.81,,,-2.2,1,2024-04-27,AHSAA 6A - Section 3 - Northridge,Outdoor,Finals,2024 Outdoor,Official
+1,Harley McNeal,Female,12,2024,100m,12.25,12.25,,,0.3,1,2024-03-29,The Rocket City Showcase,Outdoor,Prelims,2024 Outdoor,Official
+1,Harley McNeal,Female,11,2024,800m,2:25.13,145.13,,,,7,2023-01-16,Martin Luther King Indoor Classic #2,Indoor,Finals,2023 Indoor,Official
+1,Harley McNeal,Female,11,2024,400m,56.03,56.03,,,,1,2022-12-10,Holiday Invitational #2,Indoor,Finals,2023 Indoor,Official
+1,Harley McNeal,Female,11,2024,400m,56.29,56.29,,,,1,2023-01-28,Last Chance #3,Indoor,Finals,2023 Indoor,Official
+1,Harley McNeal,Female,11,2024,400m,55.78,55.78,,,,1,2023-02-04,AHSAA State Indoor Meet,Indoor,Finals,2023 Indoor,Official
+1,Harley McNeal,Female,11,2024,60m ,7.94,7.94,,,,5,2022-12-03,Magic City Invitational #2,Indoor,Finals,2023 Indoor,Official
+1,Harley McNeal,Female,11,2024,60m ,7.98,7.98,,,,9,2022-12-10,Holiday Invitational #2,Indoor,Finals,2023 Indoor,Official
+1,Harley McNeal,Female,11,2024,60m ,7.88,7.88,,,,9,2023-01-16,Martin Luther King Indoor Classic #2,Indoor,Finals,2023 Indoor,Official
+1,Harley McNeal,Female,11,2024,60m ,7.93,7.93,,,,13,2023-01-28,Last Chance #3,Indoor,Finals,2023 Indoor,Official
+1,Harley McNeal,Female,11,2024,60m ,7.85,7.85,,,,3,2023-02-03,AHSAA State Indoor Meet,Indoor,Prelims,2023 Indoor,Official
+1,Harley McNeal,Female,11,2024,60m ,7.86,7.86,,,,4,2023-02-04,AHSAA State Indoor Meet,Indoor,Finals,2023 Indoor,Official
+1,Harley McNeal,Female,11,2024,60m,7.69,7.69,,,,1,2023-12-02,Magic City Invitational #2,Indoor,Finals,2024 Indoor,Official
+2,Khiyon Lewis,Male,11,2024,Triple Jump,42-8,,512,13,,2,2023-02-25,Northridge - Black & Blue Invitational,Outdoor,Finals,2023 Outdoor,Official
+2,Khiyon Lewis,Male,11,2024,Triple Jump,42-10.75,,514.75,13.07,,7,2023-03-04,Paul W. Bryant Invitational,Outdoor,Finals,2023 Outdoor,Official
+2,Khiyon Lewis,Male,11,2024,Triple Jump,39-10,,478,12.14,,13,2023-03-03,Southern Miss High School Invitational,Outdoor,Finals,2023 Outdoor,Official
+2,Khiyon Lewis,Male,11,2024,Triple Jump,41-0,,492,12.5,,6,2023-03-11,Vestavia Hills - Varsity - King of the Mountain - Invitational,Outdoor,Finals,2023 Outdoor,Official
+2,Khiyon Lewis,Male,11,2024,Triple Jump,43-7.5,,523.5,13.3,,1,2023-03-25,Northridge - Jaguar Invitational,Outdoor,Finals,2023 Outdoor,Official
+2,Khiyon Lewis,Male,11,2024,Triple Jump,42-5.75,,509.75,12.95,,2,2023-04-01,King of the West(High School),Outdoor,Finals,2023 Outdoor,Official
+2,Khiyon Lewis,Male,11,2024,Triple Jump,44-4.5,,532.5,13.53,,6,2023-04-15,Mountain Brook Invitational,Outdoor,Finals,2023 Outdoor,Official
+2,Khiyon Lewis,Male,11,2024,Triple Jump,39-11.5,,479.5,12.18,,5,2023-04-20,West Alabama High School City/County,Outdoor,Finals,2023 Outdoor,Official
+2,Khiyon Lewis,Male,11,2024,Triple Jump,45-2.5,,542.5,13.78,,2,2023-04-29,AHSAA 6A - Section 3 - Northridge,Outdoor,Finals,2023 Outdoor,Official
+2,Khiyon Lewis,Male,11,2024,Triple Jump,42-7.25,,511.25,12.99,0,8,2023-05-05,AHSAA State Track and Field 4A-7A,Outdoor,Finals,2023 Outdoor,Official
+2,Khiyon Lewis,Male,11,2024,Triple Jump,43-8,,524,13.31,0.1,4,2023-06-16,Nike Outdoor Nationals,Outdoor,Finals,2023 Outdoor,Official
+2,Khiyon Lewis,Male,11,2024,Long Jump,20-0,,240,6.1,,4,2023-02-25,Northridge - Black & Blue Invitational,Outdoor,Finals,2023 Outdoor,Official
+2,Khiyon Lewis,Male,11,2024,Long Jump,19-10,,238,6.05,,10,2023-03-04,Paul W. Bryant Invitational,Outdoor,Finals,2023 Outdoor,Official
+2,Khiyon Lewis,Male,11,2024,Long Jump,19-5,,233,5.92,,27,2023-03-03,Southern Miss High School Invitational,Outdoor,Finals,2023 Outdoor,Official
+2,Khiyon Lewis,Male,11,2024,Long Jump,18-9,,225,5.72,,25,2023-03-11,Vestavia Hills - Varsity - King of the Mountain - Invitational,Outdoor,Finals,2023 Outdoor,Official
+2,Khiyon Lewis,Male,11,2024,Long Jump,17-1.25,,205.25,5.21,,32,2023-03-18,Homewood Invitational,Outdoor,Finals,2023 Outdoor,Official
+2,Khiyon Lewis,Male,11,2024,Long Jump,19-6.25,,234.25,5.95,,5,2023-03-25,Northridge - Jaguar Invitational,Outdoor,Finals,2023 Outdoor,Official
+2,Khiyon Lewis,Male,11,2024,Long Jump,21-8.5,,260.5,6.62,,2,2023-04-01,King of the West(High School),Outdoor,Finals,2023 Outdoor,Official
+2,Khiyon Lewis,Male,11,2024,Long Jump,18-5.75,,221.75,5.63,,3,2023-04-08,Spain Park Classic,Outdoor,Finals,2023 Outdoor,Official
+2,Khiyon Lewis,Male,11,2024,Long Jump,20-11.75,,251.75,6.39,,8,2023-04-14,Mountain Brook Invitational,Outdoor,Finals,2023 Outdoor,Official
+2,Khiyon Lewis,Male,11,2024,Long Jump,21-9,,261,6.63,,1,2023-04-20,West Alabama High School City/County,Outdoor,Finals,2023 Outdoor,Official
+2,Khiyon Lewis,Male,11,2024,Long Jump,21-8,,260,6.6,,4,2023-04-28,AHSAA 6A - Section 3 - Northridge,Outdoor,Finals,2023 Outdoor,Official
+2,Khiyon Lewis,Male,11,2024,Long Jump,20-10,,250,6.35,0.9,12,2023-05-06,AHSAA State Track and Field 4A-7A,Outdoor,Finals,2023 Outdoor,Official
+2,Khiyon Lewis,Male,11,2024,Long Jump,21-2,,254,6.45,0.6,10,2023-06-16,Nike Outdoor Nationals,Outdoor,Finals,2023 Outdoor,Official
+2,Khiyon Lewis,Male,11,2024,200m,24.53,24.53,,,,7,2023-02-25,Northridge - Black & Blue Invitational,Outdoor,Finals,2023 Outdoor,Official
+2,Khiyon Lewis,Male,11,2024,200m ,24.48,24.48,,,,25,2023-03-04,Paul W. Bryant Invitational,Outdoor,Finals,2023 Outdoor,Official
+2,Khiyon Lewis,Male,11,2024,200m,25.46,25.46,,,,23,2023-03-25,Northridge - Jaguar Invitational,Outdoor,Finals,2023 Outdoor,Official
+2,Khiyon Lewis,Male,11,2024,100m,12.5,12.5,,,,45,2023-03-18,Homewood Invitational,Outdoor,Finals,2023 Outdoor,Official
+2,Khiyon Lewis,Male,11,2024,100m,11.91,11.91,,,,6,2023-03-25,Northridge - Jaguar Invitational,Outdoor,Finals,2023 Outdoor,Official
+2,Khiyon Lewis,Male,11,2024,100m,12.32,12.32,,,,21,2023-04-08,Spain Park Classic,Outdoor,Finals,2023 Outdoor,Official
+2,Khiyon Lewis,Male,12,2024,Triple Jump,44-0,,528,13.41,,2,2024-02-24,Northridge - Black & Blue Invitational,Outdoor,Finals,2024 Outdoor,Official
+2,Khiyon Lewis,Male,12,2024,Triple Jump,44-7,,535,13.59,,2,2024-03-01,Husky March Classic,Outdoor,Finals,2024 Outdoor,Official
+2,Khiyon Lewis,Male,12,2024,Triple Jump,46-8.5,,560.5,14.24,,1,2024-03-02,Paul W. Bryant Invitational,Outdoor,Finals,2024 Outdoor,Official
+2,Khiyon Lewis,Male,12,2024,Triple Jump,48-5,,581,14.76,,1,2024-03-23,Northridge - Jaguar Invitational,Outdoor,Finals,2024 Outdoor,Official
+2,Khiyon Lewis,Male,12,2024,Triple Jump,47-9,,573,14.55,,1,2024-03-30,The Rocket City Showcase,Outdoor,Finals,2024 Outdoor,Official
+2,Khiyon Lewis,Male,12,2024,Triple Jump,44-0.75,,528.75,13.43,,6,2024-04-06,Mobile Challenge of Champions (Invite),Outdoor,Finals,2024 Outdoor,Official
+2,Khiyon Lewis,Male,12,2024,Triple Jump,45-6.25,,546.25,13.87,,4,2024-04-13,Mountain Brook Invitational,Outdoor,Finals,2024 Outdoor,Official
+2,Khiyon Lewis,Male,12,2024,Triple Jump,42-4,,508,12.9,,3,2024-04-19,West Alabama High School City/County,Outdoor,Finals,2024 Outdoor,Official
+2,Khiyon Lewis,Male,12,2024,Triple Jump,46-5,,557,14.15,,1,2024-04-27,AHSAA 6A - Section 3 - Northridge,Outdoor,Finals,2024 Outdoor,Official
+2,Khiyon Lewis,Male,12,2024,Triple Jump,46-10.75,,562.75,14.29,-0.7,1,2024-05-03,AHSAA State Track and Field 4A-7A,Outdoor,Finals,2024 Outdoor,Official
+2,Khiyon Lewis,Male,12,2024,Long Jump,22-0,,264,6.71,,1,2024-02-24,Northridge - Black & Blue Invitational,Outdoor,Finals,2024 Outdoor,Official
+2,Khiyon Lewis,Male,12,2024,Long Jump,20-8.75,,248.75,6.32,,4,2024-03-01,Husky March Classic,Outdoor,Finals,2024 Outdoor,Official
+2,Khiyon Lewis,Male,12,2024,Long Jump,20-2.75,,242.75,6.17,,3,2024-03-02,Paul W. Bryant Invitational,Outdoor,Finals,2024 Outdoor,Official
+2,Khiyon Lewis,Male,12,2024,Long Jump,21-4.5,,256.5,6.52,,1,2024-03-23,Northridge - Jaguar Invitational,Outdoor,Finals,2024 Outdoor,Official
+2,Khiyon Lewis,Male,12,2024,Long Jump,21-11,,263,6.68,,3,2024-03-30,The Rocket City Showcase,Outdoor,Finals,2024 Outdoor,Official
+2,Khiyon Lewis,Male,12,2024,Long Jump,21-6.25,,258.25,6.56,,5,2024-04-13,Mountain Brook Invitational,Outdoor,Finals,2024 Outdoor,Official
+2,Khiyon Lewis,Male,12,2024,Long Jump,22-9,,273,6.93,,2,2024-04-19,West Alabama High School City/County,Outdoor,Finals,2024 Outdoor,Official
+2,Khiyon Lewis,Male,12,2024,Long Jump,22-11.25,,275.25,6.99,,2,2024-04-27,AHSAA 6A - Section 3 - Northridge,Outdoor,Finals,2024 Outdoor,Official
+2,Khiyon Lewis,Male,12,2024,Long Jump,22-11.75,,275.75,7,,3,2024-05-03,AHSAA State Track and Field 4A-7A,Outdoor,Finals,2024 Outdoor,Official
+2,Khiyon Lewis,Male,12,2024,100m,11.77,11.77,,,,11,2024-02-24,Northridge - Black & Blue Invitational,Outdoor,Finals,2024 Outdoor,Official
+2,Khiyon Lewis,Male,12,2024,100m,11.55,11.55,,,,8,2024-03-02,Paul W. Bryant Invitational,Outdoor,Finals,2024 Outdoor,Official
+2,Khiyon Lewis,Male,11,2024,Triple Jump,42-7.25,,511.25,12.99,,5,2022-12-03,Magic City Invitational #2,Indoor,Finals,2023 Indoor,Official
+2,Khiyon Lewis,Male,11,2024,Triple Jump,40-10.5,,490.5,12.46,,1,2023-01-10,JV Meet #2,Indoor,Finals,2023 Indoor,Official
+2,Khiyon Lewis,Male,11,2024,Triple Jump,42-6.25,,510.25,12.96,,9,2023-01-16,Martin Luther King Indoor Classic #2,Indoor,Finals,2023 Indoor,Official
+2,Khiyon Lewis,Male,11,2024,Triple Jump,40-9.75,,489.75,12.44,,11,2023-01-28,Last Chance #3,Indoor,Finals,2023 Indoor,Official
+2,Khiyon Lewis,Male,11,2024,Triple Jump,42-1.75,,505.75,12.85,,7,2023-02-04,AHSAA State Indoor Meet,Indoor,Finals,2023 Indoor,Official
+2,Khiyon Lewis,Male,11,2024,Long Jump,18-10.5,,226.5,5.75,,23,2023-12-03,Magic City Invitational #2,Indoor,Finals,2023 Indoor,Official
+2,Khiyon Lewis,Male,11,2024,Long Jump,19-3,,231,5.87,,18,2023-12-10,Holiday Invitational #2,Indoor,Finals,2023 Indoor,Official
+2,Khiyon Lewis,Male,11,2024,Long Jump,18-2.5,,218.5,5.55,,9,2023-01-10,JV Meet #2,Indoor,Finals,2023 Indoor,Official
+2,Khiyon Lewis,Male,11,2024,Long Jump,18-10.25,,226.25,5.75,,38,2023-01-16,Martin Luther King Indoor Classic #2,Indoor,Finals,2023 Indoor,Official
+2,Khiyon Lewis,Male,11,2024,400m,55.2,55.2,,,,14,2023-01-10,JV Meet #2,Indoor,Finals,2023 Indoor,Official

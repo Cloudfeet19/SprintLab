@@ -12,12 +12,14 @@ genders = ["Male", "Female"]
 athletes_class = list(range(2035, 1960, -1))
 grades = list(range(6,13))
 
-class ResultForm(FlaskForm):
+class AthleteForm(FlaskForm):
     first_name = StringField("First Name", validators=[DataRequired()])
     last_name = StringField("Last Name", validators=[DataRequired()])
     gender = SelectField("Gender", choices=["Male", "Female"], validators=[DataRequired()])
-    grade = SelectField("Grade", choices=grades, validators=[DataRequired()])
     athlete_class = SelectField("Graduation Class", choices=athletes_class, validators=[DataRequired()])
+
+class ResultForm(FlaskForm):
+    grade = SelectField("Grade", choices=grades, validators=[DataRequired()])
     event = SelectField("Event", choices=ALL_EVENTS, validators=[DataRequired()])
     result = StringField("Result", validators=[DataRequired()])
     wind = FloatField("Wind Reading")

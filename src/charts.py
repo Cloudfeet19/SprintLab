@@ -1,6 +1,78 @@
 import pandas as pd
 import plotly.express as px
 from forms.forms import TRACK_EVENTS, FIELD_EVENTS
+
+def style_sprintlab_chart(chart):
+    """
+    Applies SprintLab dashboard styling to Plotly charts.
+    """
+
+    chart.update_layout(
+        paper_bgcolor="rgba(0,0,0,0)",
+        plot_bgcolor="#111827",
+        font=dict(
+            color="#E5E7EB",
+            family="Arial"
+        ),
+        title=dict(
+            font=dict(size=18, color="#F9FAFB")
+        ),
+        xaxis=dict(
+            gridcolor="rgba(255,255,255,0.08)",
+            zerolinecolor="rgba(255,255,255,0.15)",
+            linecolor="rgba(255,255,255,0.2)",
+            tickfont=dict(color="#CBD5E1"),
+            title=dict(font=dict(color="#CBD5E1"))
+        ),
+        yaxis=dict(
+            gridcolor="rgba(255,255,255,0.08)",
+            zerolinecolor="rgba(255,255,255,0.15)",
+            linecolor="rgba(255,255,255,0.2)",
+            tickfont=dict(color="#CBD5E1"),
+            title=dict(font=dict(color="#CBD5E1"))
+        ),
+        legend=dict(
+            bgcolor="rgba(0,0,0,0)",
+            font=dict(color="#CBD5E1")
+        ),
+        hoverlabel=dict(
+            bgcolor="#0F172A",
+            font_size=13,
+            font_color="#F8FAFC",
+            bordercolor="#38BDF8"
+        )
+    )
+
+    chart.update_traces(
+        marker=dict(size=6),
+        line=dict(width=3),
+        hoverlabel=dict(
+            bgcolor="#0F172A",
+            font_color="#F8FAFC"
+        )
+    )
+
+    return chart
+
+def reconfigure_sizing(chart, chart_type):
+    """
+    Chart helper to resize when necessary
+    """
+    chart.update_layout(
+        height=450,
+        width=450,
+        autosize=True,
+        margin=dict(l=40, r=40, t=30, b=40),
+        title_font_size=12,
+        plot_bgcolor="rgba(0, 0, 0, 0)",
+        paper_bgcolor="#F7E7CE"
+    )
+
+    if chart_type == "line":
+        chart.update_traces(line_shape='spline', line_smoothing=0.5, marker=dict(size=4))
+
+    return chart
+
 def athlete_event_result_chart(df: pd.DataFrame, athlete_id: int, event: str) -> px.line:
     """
     :param df: master dataframe
@@ -33,6 +105,9 @@ def athlete_event_result_chart(df: pd.DataFrame, athlete_id: int, event: str) ->
         performance_line.update_layout(xaxis_title="Date", yaxis_title = "Seconds")
     else:
         performance_line.update_layout(xaxis_title="Date", yaxis_title = "Meters")
+
+    performance_line = reconfigure_sizing(performance_line, "line")
+    # performance_line = style_sprintlab_chart(performance_line)
 
     return performance_line
 
@@ -78,6 +153,8 @@ def current_pr_progression_chart(df: pd.DataFrame, athlete_id: int, event: str) 
     else:
         progression_line.update_layout(xaxis_title="Date", yaxis_title = "Meters")
 
+    progression_line = reconfigure_sizing(progression_line, "line")
+    # progression_line =style_sprintlab_chart(progression_line)
 
     return progression_line
 
@@ -127,13 +204,16 @@ def athlete_medal_count_chart(df: pd.DataFrame, athlete_id: int) -> px.bar:
         text="label"
     )
 
+    medal_chart = reconfigure_sizing(medal_chart, "bar")
+    # medal_chart = style_sprintlab_chart(medal_chart)
+
     return medal_chart
 
 def event_medal_count_chart(df: pd.DataFrame, event: str) -> px.bar:
     """
-        :param df: Master df
-        :return: Bar chart showcasing all medals obtained in the event
-        """
+    :param df: Master df
+    :return: Bar chart showcasing all medals obtained in the event
+    """
 
     # filters dataset to desired event
     event_dataset = df[df["event"] == event]
@@ -176,11 +256,8 @@ def event_medal_count_chart(df: pd.DataFrame, event: str) -> px.bar:
     medal_chart.update_xaxes(tickmode = "array", tickvals=[1,2,3])
     medal_chart.update_yaxes(dtick=1, tickformat=',d')
 
-    medal_chart.update_layout(
-        height=450,
-        autosize=True,
-        margin=dict(l=40, r=40, t=30, b=40)
-    )
+    medal_chart = reconfigure_sizing(medal_chart, "bar")
+    # medal_chart = style_sprintlab_chart(medal_chart)
 
     return medal_chart
 
@@ -216,17 +293,22 @@ def coach_event_rankings_chart(ranked_events_df: pd.DataFrame) -> px.bar:
     ranking_bar.update_xaxes(title="Event")
     ranking_bar.update_yaxes(title="Average Placement")
 
+    ranking_bar = reconfigure_sizing(ranking_bar, "bar")
+    # ranking_bar = style_sprintlab_chart(ranking_bar)
+
     return ranking_bar
 
 def ranked_event_bar_chart(best_results_data, event) -> px.bar:
     if not best_results_data:
         return None
+
     ranked_bar_chart = px.bar(
         best_results_data,
         x="best_result",
         y="name",
         color="name",
         orientation="h",
+        text="best_raw_result"
     )
 
     ranked_bar_chart.update_layout(
@@ -240,6 +322,9 @@ def ranked_event_bar_chart(best_results_data, event) -> px.bar:
 
     if event in TRACK_EVENTS:
         ranked_bar_chart.update_xaxes(title="Time")
+
+    ranked_bar_chart = reconfigure_sizing(ranked_bar_chart, "bar")
+    # ranked_bar_chart = style_sprintlab_chart(ranked_bar_chart)
 
     return ranked_bar_chart
 

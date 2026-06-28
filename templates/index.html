@@ -3,6 +3,19 @@
 {% block title %}SprintLab | Home{% endblock %}
 
 {% block content %}
+{% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+        <div class="toast-stack">
+            {% for category, message in messages %}
+                <div class="flash-toast flash-{{ category }}">
+                    <span>{{ message }}</span>
+                </div>
+            {% endfor %}
+        </div>
+    {% endif %}
+{% endwith %}
+
+
 <section class="py-5">
     <div class="row align-items-center">
         <div class="col-lg-8">

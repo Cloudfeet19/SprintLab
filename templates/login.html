@@ -1,0 +1,48 @@
+{% extends "base.html" %}
+
+{% block title %}Login | SprintLab{% endblock %}
+
+{% block content %}
+{% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+        <div class="toast-stack">
+            {% for category, message in messages %}
+                <div class="flash-toast flash-{{ category }}">
+                    <span>{{ message }}</span>
+                </div>
+            {% endfor %}
+        </div>
+    {% endif %}
+{% endwith %}
+
+<section class="section">
+    <div class="container auth-container">
+
+        <div class="section-header">
+            <div class="eyebrow">Welcome Back</div>
+            <h2>Log In to SprintLab</h2>
+            <p>Access your athletes, dashboards, comparisons, and coaching analytics.</p>
+        </div>
+
+        <div class="form-card auth-card">
+            <form method="POST" action="{{ url_for('login') }}">
+                <div class="form-group">
+                    <label class="form-label" for="email">Email</label>
+                    <input class="form-control" type="email" id="email" name="email" placeholder="coach@email.com" required>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label" for="password">Password</label>
+                    <input class="form-control" type="password" id="password" name="password" placeholder="Enter password" required>
+                </div>
+
+                <div class="form-actions">
+                    <button class="btn btn-primary" type="submit">Log In</button>
+                    <a href="{{ url_for('register') }}" class="btn btn-secondary">Create Account</a>
+                </div>
+            </form>
+        </div>
+
+    </div>
+</section>
+{% endblock %}

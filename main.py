@@ -1,42 +1,46 @@
 # Sprint Lab - Track and Field Sport Analysis
-from xml.sax.handler import property_interning_dict
 
 import pandas as pd
 
 from dotenv import load_dotenv
 from os import environ
 
-from flask import Flask, render_template, request, redirect, url_for, flash, abort
-from flask_bootstrap import Bootstrap
-from flask_sqlalchemy import SQLAlchemy
-from sqlalchemy import select, create_engine
+from flask import Flask, render_template, request, redirect, url_for, flash
+from sqlalchemy import select
 
-from flask_login import UserMixin, login_user, LoginManager, current_user, logout_user, login_required
+from flask_login import login_user, logout_user, LoginManager, current_user, login_required
 from werkzeug.security import generate_password_hash, check_password_hash
 
-from database.models import db, ResultTable, AthleteTable
-from database.helpers.athlete_helpers import query_athlete, result_in_seconds, results_in_inches, result_in_meters, get_best_results
+from database.models import db, ResultTable, AthleteTable, UserTable
+from helpers.helpers import get_result_data, create_new_athlete, result_in_seconds, results_in_inches, result_in_meters, get_best_results, get_chart_html
 
-from forms.forms import ResultForm, ALL_EVENTS, TRACK_EVENTS, FIELD_EVENTS
+from forms.forms import ResultForm, AthleteForm, ALL_EVENTS, FIELD_EVENTS
 
 from src.cleaning import clean_data
 from src.features import add_features, get_season, classify_event
-from src.analytics import athletes_summary, ranking_coached_events, get_coaches_complete_event_summary
-from src.charts import athlete_event_result_chart, coach_event_rankings_chart, athlete_medal_count_chart, current_pr_progression_chart
+from src.analytics import athletes_summary, get_coaches_complete_event_summary
+from src.charts import athlete_event_result_chart, athlete_medal_count_chart, current_pr_progression_chart
 from src.charts import event_medal_count_chart, ranked_event_bar_chart
 
 load_dotenv()
 
 app = Flask(__name__)
 app.config["SECRET_KEY"] = environ["SECRET_KEY"]
-app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///SprintLab.db"
+# No users -- Testing
+# app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///SprintLab.db"
+
+# Users - Testing
+app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///SprintLabPt2.db"
 
 db.init_app(app)
+
+login_manager = LoginManager()
+login_manager.init_app(app)
 
 with app.app_context():
     db.create_all()
 
-def initialize_dataset(db) -> pd.DataFrame:
+def initialize_dataset(db):
     """
     Convert a sqlalchemy database table to pandas dataframe
     """
@@ -72,71 +76,133 @@ def initialize_dataset(db) -> pd.DataFrame:
 
     df = pd.DataFrame(data)
 
-    # Clean Data
-    df = clean_data(df)
+    if data: # only clean and add features to the dataframe if there is data
 
-    # Add features
-    df = add_features(df)
+        # Clean Data
+        df = clean_data(df)
+
+        # Add features
+        df = add_features(df)
 
     return df
 
+@login_manager.user_loader
+def load_user(user_id):
+    return db.session.get(UserTable, int(user_id))
+
+@app.route('/register', methods=["GET", "POST"])
+def register():
+    print(request.method)
+    if request.method == "POST":
+        email = request.form.get("email")
+        user = db.session.execute(db.select(UserTable).where(UserTable.email == email)).scalar_one_or_none()
+        if user: # checks if the user already has signed up in with this email
+            flash("You've already signed up with that email, log in instead.")
+            return redirect(url_for("login"))
+
+        password = request.form.get("password")
+        hashed_password = generate_password_hash(password=password, method="pbkdf2:sha256", salt_length=8)
+
+        new_user = UserTable(
+            email=email,
+            password=hashed_password,
+            name=request.form.get("name")
+        )
+
+        db.session.add(new_user)
+        db.session.commit()
+        login_user(new_user)
+        return redirect(url_for("home"))
+    else:
+        print(request.method)
+    return render_template("register.html", logged_in=current_user.is_authenticated)
+
+@app.route('/login', methods=["GET", "POST"])
+def login():
+    error = None
+    if request.method == "POST":
+        email = request.form.get("email")
+        password = request.form.get("password")
+
+        try:
+            user = db.session.execute(
+                db.select(UserTable).filter_by(email=email)
+            ).scalar_one_or_none()
+        except SQLAlchemyError:
+            current_app.logger.exception("DB error during login")
+            flash("Invalid credentials. Please try again.", "error")
+            return render_template("login.html")
+
+        if user and check_password_hash(user.password, password):
+            login_user(user)
+            # flash("Successfully logged in.", "success")
+            return redirect(url_for("home"))
+
+        flash("Invalid credentials. Try again.", "error")
+
+    return render_template("login.html", logged_in=current_user.is_authenticated)
+
+@app.route('/logout')
+@login_required
+def logout():
+    logout_user()
+    return redirect(url_for("login"))
+
 @app.route("/")
+def index():
+    if current_user.is_authenticated:
+        return redirect(url_for("home"))
+    return redirect(url_for("login"))
+
+@app.route("/home")
+@login_required
 def home():
     return render_template("index.html")
 
 # Complete -- May need upgrading
 @app.route("/add-result", methods=["GET", "POST"])
+@login_required
 def add_result():
-    form = ResultForm()
+    result_form = ResultForm()
+    athlete_form = AthleteForm()
 
-    if form.validate_on_submit():
-        selected_athlete_id = request.args.get("athlete_id")
+    athletes = db.session.execute(
+        select(AthleteTable).where(AthleteTable.user_id == current_user.id)
+    ).scalars().all()
 
+    selected_athlete_id = request.form.get("athlete_id")
+
+    if request.method == "POST":
         if selected_athlete_id == "new":
-            athlete = create_new_athlete(form)
+            valid = athlete_form.validate() and result_form.validate()
         else:
-            athlete = db.session.get(
-                AthleteTable, int(selected_athlete_id)
-            )
+            valid = result_form.validate()
 
-        result = ResultTable()
-        result.event = form.event.data
-        result.athlete = athlete
-        result.grade = form.grade.data
-        result.raw_result = form.result.data
-        result.result_in_seconds = result_in_seconds(form.result.data, classify_event(str(form.event.data)))
-        result.result_in_inches = results_in_inches(form.result.data, classify_event(str(form.event.data)))
-        if result.result_in_inches:
-            result.result_in_meters = result_in_meters(result.result_in_inches)
-        else:
-            result.result_in_meters = None
-        result.wind = form.wind.data
-        result.placement = form.placement.data
-        result.date = form.date.data
-        result.season = get_season(form.date.data, form.atmosphere.data)
-        result.meet = form.meet.data
-        result.atmosphere = form.atmosphere.data
-        result.race_type = form.race_type.data
-        result.performance_type = form.performance_type.data
+        if valid:
+            if selected_athlete_id == "new":
+                athlete = create_new_athlete(athlete_form, current_user)
+            else:
+                athlete = db.session.get(
+                    AthleteTable, selected_athlete_id
+                )
 
+            result = get_result_data(result_form, athlete, current_user)
 
-        db.session.add(result)
-        db.session.commit()
+            db.session.add(result)
+            db.session.commit()
 
         return redirect(url_for("add_result"))
 
-    return render_template("add_result.html", form=form)
-
-@app.route("/athletes")
-def athletes():
-    athletes = db.session.execute(AthleteTable).scalars().all()
-    return render_template("athletes.html", athletes=athletes)
+    return render_template("add_result.html", result_form=result_form, athlete_form=athlete_form, athletes=athletes)
 
 # Complete -- May need upgrading
 @app.route("/athletes_dashboard")
+@login_required
 def athletes_dashboard():
     # Grabs all athletes for the dropdown
-    athletes = db.session.execute(select(AthleteTable)).scalars().all()
+    athletes = db.session.execute(
+        select(AthleteTable).where(AthleteTable.user_id == current_user.id)
+    ).scalars().all()
 
     selected_athlete_id = request.args.get("athlete_id", type=int)
     selected_athlete = None
@@ -172,6 +238,8 @@ def athletes_dashboard():
             # turn the database object into a pandas dataframe so that we can apply the analytics charts and features
             df = initialize_dataset(db)
 
+            df = df[df["event"] == selected_event]
+
             # grabs all charts and analytics features to pass to the HTML
             chart = athlete_event_result_chart(df, selected_athlete_id, selected_event)
             chart_html = chart.to_html(full_html=False)
@@ -199,11 +267,8 @@ def athletes_dashboard():
         current_pr=current_pr
     )
 
-@app.route("/events")
-def events():
-    return render_template("events.html")
-
 @app.route("/event_dashboard")
+@login_required
 def event_dashboard():
     selected_event = request.args.get("event")
     summary = {}
@@ -218,62 +283,63 @@ def event_dashboard():
         # Initialize pandas dataframe from sql database
         df = initialize_dataset(db)
 
-        # grabs the summary to display in the html for the selected event
-        summary = get_coaches_complete_event_summary(df, selected_event)
+        if not df.empty: # Checks if df is empty
+            # grabs the summary to display in the html for the selected event
+            summary = get_coaches_complete_event_summary(df, selected_event)
 
-        # the combined medal chart for the selected event, male and female
-        all_medal_chart = event_medal_count_chart(df, selected_event)
-        all_medal_chart = all_medal_chart.to_html(full_html=False, config={"responsive": True}) if all_medal_chart else None
+            # the combined medal chart for the selected event, male and female
+            all_medal_chart = event_medal_count_chart(df, selected_event)
+            all_medal_chart = all_medal_chart.to_html(full_html=False, config={"responsive": True}) if all_medal_chart else None
 
-        # male medal chart only for the selected event
-        male_df = df[df["gender"] == "Male"]
-        male_medal_chart = event_medal_count_chart(male_df, selected_event)
-        male_medal_chart = male_medal_chart.to_html(full_html=False, config={"responsive": True}) if male_medal_chart else None
+            # male medal chart only for the selected event
+            male_df = df[df["gender"] == "Male"]
+            male_medal_chart = event_medal_count_chart(male_df, selected_event)
+            male_medal_chart = male_medal_chart.to_html(full_html=False, config={"responsive": True}) if male_medal_chart else None
 
-        # filters and groups the data by event and gender
-        event_filtered_male_df = male_df[male_df["event"] == selected_event]
-        male_grouped_df = event_filtered_male_df.groupby(["athlete_id"], as_index=False, observed=True)
+            # filters and groups the data by event and gender
+            event_filtered_male_df = male_df[male_df["event"] == selected_event]
+            male_grouped_df = event_filtered_male_df.groupby(["athlete_id"], as_index=False, observed=True)
 
-        # gets the best result from each group of data passed in
-        male_best_results = get_best_results(male_grouped_df)
+            # gets the best result from each group of data passed in
+            male_best_results = get_best_results(male_grouped_df)
 
-        # sorts the data / flips the chart if it is a field event
-        if male_best_results:
-            male_sorted_best_result_data = sorted(male_best_results, key=lambda result_data: result_data["best_result"])
-            if selected_event in FIELD_EVENTS:
-                male_sorted_best_result_data = sorted(male_best_results, key=lambda result_data: result_data["best_result"], reverse=True)
+            # sorts the data / flips the chart if it is a field event
+            if male_best_results:
+                male_sorted_best_result_data = sorted(male_best_results, key=lambda result_data: result_data["best_result"])
+                if selected_event in FIELD_EVENTS:
+                    male_sorted_best_result_data = sorted(male_best_results, key=lambda result_data: result_data["best_result"], reverse=True)
 
 
-        # charts the data and prepares it to be sent to the HTML file
-        male_event_ranking_chart = ranked_event_bar_chart(male_sorted_best_result_data, selected_event)
-        male_event_ranking_chart = male_event_ranking_chart.to_html(full_html=False,
-                                                        config={"responsive": True}) if male_event_ranking_chart else None
+                # charts the data and prepares it to be sent to the HTML file
+                male_event_ranking_chart = ranked_event_bar_chart(male_sorted_best_result_data, selected_event)
+                male_event_ranking_chart = male_event_ranking_chart.to_html(full_html=False,
+                                                            config={"responsive": True}) if male_event_ranking_chart else None
 
-        ####################################################
-        # female medal chart for the selected event
-        female_df = df[df["gender"] == "Female"]
-        female_medal_chart = event_medal_count_chart(female_df, selected_event)
-        female_medal_chart = female_medal_chart.to_html(full_html=False, config={"responsive": True}) if female_medal_chart else None
+            ####################################################
+            # female medal chart for the selected event
+            female_df = df[df["gender"] == "Female"]
+            female_medal_chart = event_medal_count_chart(female_df, selected_event)
+            female_medal_chart = female_medal_chart.to_html(full_html=False, config={"responsive": True}) if female_medal_chart else None
 
-        # filters and groups the data by event and gender
-        event_filtered_female_df = female_df[female_df["event"] == selected_event]
-        female_grouped_df = event_filtered_female_df.groupby(["athlete_id"], as_index=False, observed=True)
+            # filters and groups the data by event and gender
+            event_filtered_female_df = female_df[female_df["event"] == selected_event]
+            female_grouped_df = event_filtered_female_df.groupby(["athlete_id"], as_index=False, observed=True)
 
-        # gets the best result from each group of data passed in
-        female_best_results = get_best_results(female_grouped_df)
+            # gets the best result from each group of data passed in
+            female_best_results = get_best_results(female_grouped_df)
 
-        female_sorted_best_result_data = None
+            female_sorted_best_result_data = None
 
-        # sorts the data / flips the chart if it is a field event
-        if female_best_results:
-            female_sorted_best_result_data = sorted(female_best_results, key=lambda result_data: result_data["best_result"])
-            if selected_event in FIELD_EVENTS:
-                female_sorted_best_result_data = sorted(female_best_results, key=lambda result_data: result_data["best_result"], reverse=True)
+            # sorts the data / flips the chart if it is a field event
+            if female_best_results:
+                female_sorted_best_result_data = sorted(female_best_results, key=lambda result_data: result_data["best_result"])
+                if selected_event in FIELD_EVENTS:
+                    female_sorted_best_result_data = sorted(female_best_results, key=lambda result_data: result_data["best_result"], reverse=True)
 
-            # charts the data and prepares it to be sent to the HTML file
-            female_event_ranking_chart = ranked_event_bar_chart(female_sorted_best_result_data, selected_event)
-            female_event_ranking_chart = female_event_ranking_chart.to_html(full_html=False,
-                                                                            config={"responsive": True}) if female_event_ranking_chart else None
+                # charts the data and prepares it to be sent to the HTML file
+                female_event_ranking_chart = ranked_event_bar_chart(female_sorted_best_result_data, selected_event)
+                female_event_ranking_chart = female_event_ranking_chart.to_html(full_html=False,
+                                                                                config={"responsive": True}) if female_event_ranking_chart else None
 
 
     return render_template(
@@ -289,11 +355,95 @@ def event_dashboard():
     )
 
 @app.route("/compare")
+@login_required
 def compare():
-    return render_template("compare.html")
+    athletes = db.session.execute(
+        select(AthleteTable).where(AthleteTable.user_id == current_user.id)
+    ).scalars().all()
+    events = ALL_EVENTS
+    selected_event = request.args.get("event")
+    athlete_one_id = request.args.get("athlete_one_id")
+    athlete_two_id = request.args.get("athlete_two_id")
+
+    athlete_one = db.session.get(AthleteTable, athlete_one_id)
+    athlete_two = db.session.get(AthleteTable, athlete_two_id)
+
+    # initialize potentially empty objects
+    athlete_one_summary = None
+    athlete_two_summary = None
+
+    athlete_one_result_chart_html = None
+    athlete_two_result_chart_html = None
+
+    athlete_one_pr_chart_html = None
+    athlete_two_pr_chart_html = None
+
+    athlete_one_medal_chart_html = None
+    athlete_two_medal_chart_html = None
+
+    # initalize the dataframe for later filtering
+    if athlete_one and athlete_two and selected_event:
+        df = initialize_dataset(db)
+
+    if athlete_one and selected_event:
+        # create a df of result for the athlete with the selected event
+        df_athlete_one = df[df["athlete_id"] == athlete_one.id]
+        df_athlete_one_event = df_athlete_one[df_athlete_one["event"] == selected_event]
+
+        # ensure that to create the summary and chart, there is data for the selected athlete and event
+        if not df_athlete_one_event.empty:
+            athlete_one_id = int(athlete_one_id)
+            athlete_one_summary = athletes_summary(df_athlete_one_event, athlete_one_id)
+
+            athlete_one_result_chart = athlete_event_result_chart(df, athlete_one_id, selected_event)
+            athlete_one_result_chart_html = get_chart_html(athlete_one_result_chart)
+
+            athlete_one_pr_chart = current_pr_progression_chart(df, athlete_one_id, selected_event)
+            athlete_one_pr_chart_html = get_chart_html(athlete_one_pr_chart)
+
+            athlete_one_medal_chart = athlete_medal_count_chart(df, athlete_one_id)
+            athlete_one_medal_chart_html = get_chart_html(athlete_one_medal_chart)
+
+    if athlete_two and selected_event:
+        # create a dataframe of result for the athlete with the selected event
+        df_athlete_two = df[df["athlete_id"] == athlete_two.id]
+        df_athlete_two_event = df_athlete_two[df_athlete_two["event"] == selected_event]
+
+        # ensure that to create the summary and chart, there is data for the selected athlete and event
+        if not df_athlete_two_event.empty:
+            athlete_two_id = int(athlete_two_id)
+            athlete_two_summary = athletes_summary(df_athlete_two_event, athlete_two_id)
+
+            athlete_two_result_chart = athlete_event_result_chart(df, athlete_two_id, selected_event)
+            athlete_two_result_chart_html = get_chart_html(athlete_two_result_chart)
+
+            athlete_two_pr_chart = current_pr_progression_chart(df, athlete_two_id, selected_event)
+            athlete_two_pr_chart_html = get_chart_html(athlete_two_pr_chart)
+
+            athlete_two_medal_chart = athlete_medal_count_chart(df, athlete_two_id)
+            athlete_two_medal_chart_html = get_chart_html(athlete_two_medal_chart)
+
+    return render_template("compare.html",
+                           athletes=athletes,
+                           events=events,
+                           selected_event=selected_event,
+                           athlete_one_id=athlete_one_id,
+                           athlete_two_id=athlete_two_id,
+                           athlete_one=athlete_one,
+                           athlete_two=athlete_two,
+                           athlete_one_summary=athlete_one_summary,
+                           athlete_two_summary=athlete_two_summary,
+                           athlete_one_result_chart=athlete_one_result_chart_html,
+                           athlete_two_result_chart=athlete_two_result_chart_html,
+                           athlete_one_pr_chart=athlete_one_pr_chart_html,
+                           athlete_two_pr_chart=athlete_two_pr_chart_html,
+                           athlete_one_medal_chart=athlete_one_medal_chart_html,
+                           athlete_two_medal_chart=athlete_two_medal_chart_html
+                           )
 
 if __name__ == '__main__':
     app.run(debug=True, port=5050)
+
 
 
 

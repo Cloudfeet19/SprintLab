@@ -1,0 +1,41 @@
+{% extends "base.html" %}
+
+{% block title %}Register | SprintLab{% endblock %}
+
+{% block content %}
+<section class="section">
+    <div class="container auth-container">
+
+        <div class="section-header">
+            <div class="eyebrow">Create Account</div>
+            <h2>Start Using SprintLab</h2>
+            <p>Create your coach account to track athletes, results, PRs, medals, and event performance.</p>
+        </div>
+
+        <div class="form-card auth-card">
+            <form method="POST" action="{{ url_for('register') }}">
+                <div class="form-group">
+                    <label class="form-label" for="name">Name</label>
+                    <input class="form-control" type="text" id="name" name="name" placeholder="Coach name" required>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label" for="email">Email</label>
+                    <input class="form-control" type="email" id="email" name="email" placeholder="coach@email.com" required>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label" for="password">Password</label>
+                    <input class="form-control" type="password" id="password" name="password" placeholder="Create password" required>
+                </div>
+
+                <div class="form-actions">
+                    <button class="btn btn-primary" type="submit">Create Account</button>
+                    <a href="{{ url_for('login') }}" class="btn btn-secondary">Already Have Account</a>
+                </div>
+            </form>
+        </div>
+
+    </div>
+</section>
+{% endblock %}

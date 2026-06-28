@@ -45,6 +45,9 @@ def add_features(df: pd.DataFrame) -> pd.DataFrame:
     # add pr columns using the temp df
     df[["is_pr", "current_pr", "improvement"]] = pr_df[["is_pr", "current_pr", "improvement"]]
 
+    # add wind aided column
+    df["is_wind_aided"] = df["wind"].apply(wind_aid_detection)
+
     return df
 
 # Classify Event
@@ -147,3 +150,10 @@ def detect_pr_progression(athlete_event_dataset: pd.DataFrame):
     athlete_event_dataset["improvement"] = improvement_list
 
     return athlete_event_dataset
+
+def wind_aid_detection(wind: float):
+    """Detects wind aided results"""
+    if wind > 2.0:
+        return True
+    else:
+        return False

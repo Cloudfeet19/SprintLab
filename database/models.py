@@ -1,7 +1,8 @@
 from flask_sqlalchemy import SQLAlchemy
-from flask_login import UserMixin
+from flask_login import UserMixin, login_user, LoginManager, login_required, current_user, logout_user
 from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column, relationship
 from sqlalchemy import Integer, String, Float, Date, ForeignKey, UniqueConstraint
+from typing import List
 from datetime import date
 
 class Base(DeclarativeBase):
@@ -9,24 +10,44 @@ class Base(DeclarativeBase):
 
 db = SQLAlchemy(model_class=Base)
 
+class UserTable(UserMixin, db.Model):
+    __tablename__ = "user"
+
+    id: Mapped[int] = mapped_column(Integer, primary_key=True)
+    email: Mapped[str] = mapped_column(String(100), unique=True)
+    password: Mapped[str] = mapped_column(String(100))
+    name: Mapped[str] = mapped_column(String(1000))
+
+    results: Mapped[List["ResultTable"]] = db.relationship(back_populates="user")
+    athletes: Mapped[List["AthleteTable"]] = db.relationship(back_populates="user")
+
 class AthleteTable(db.Model):
     __tablename__ = "athlete"
 
     id: Mapped[int] = mapped_column(Integer, primary_key=True, autoincrement=True)
     name: Mapped[str] = mapped_column(String(250), nullable=False)
     gender: Mapped[str] = mapped_column(String(250), nullable=False)
-    # grade: Mapped[int] = mapped_column(Integer, nullable=False)
     athlete_class: Mapped[int] = mapped_column(Integer, nullable=False)
 
+    # children below
     results = db.relationship("ResultTable", back_populates="athlete") # Create the parent / child relationship
 
+    # parents below
+    user_id: Mapped[int] = mapped_column(Integer, ForeignKey("user.id"))
+    user = db.relationship("UserTable", back_populates="athletes")
 
 class ResultTable(db.Model):
     __tablename__ = "result"
 
     id: Mapped[int] = mapped_column(Integer, primary_key=True, autoincrement=True)
+
+    # parents below
     athlete_id: Mapped[int] = mapped_column(Integer, ForeignKey("athlete.id"))
     athlete = db.relationship("AthleteTable", back_populates="results") # Create the parent / child relationship
+
+    user_id: Mapped[int] = mapped_column(Integer, ForeignKey("user.id"))
+    user = db.relationship("UserTable", back_populates="results")
+
     grade: Mapped[int] = mapped_column(Integer, nullable=False)
     event: Mapped[str] = mapped_column(String(250), nullable=False)
     raw_result: Mapped[str] = mapped_column(String(250), nullable=False)

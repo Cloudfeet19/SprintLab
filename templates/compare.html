@@ -1,0 +1,288 @@
+{% extends "base.html" %}
+
+{% block title %}SprintLab | Athlete Compare{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <div>
+        <h1 class="fw-bold">Athlete Comparison</h1>
+        <p class="text-muted mb-0">
+            Select two athletes and an event to compare performance, PR progression, and medal production.
+        </p>
+    </div>
+
+    <a href="{{ url_for('add_result') }}" class="btn btn-primary">
+        Add Result
+    </a>
+</div>
+
+{% if not athletes %}
+    <div class="card shadow-sm border-0">
+        <div class="card-body text-center py-5">
+            <h3 class="fw-bold">No athletes available yet</h3>
+            <p class="text-muted">
+                Add athlete results before using the comparison dashboard.
+            </p>
+            <a href="{{ url_for('add_result') }}" class="btn btn-primary btn-lg">
+                Add First Result
+            </a>
+        </div>
+    </div>
+{% else %}
+
+<form method="GET" action="{{ url_for('compare') }}" class="card shadow-sm border-0 mb-4">
+    <div class="card-body">
+        <div class="row g-3 align-items-end">
+            <div class="col-md-4">
+                <label class="form-label fw-semibold">Athlete One</label>
+                <select name="athlete_one_id" class="form-select">
+                    <option value="" {% if not athlete_one_id %}selected{% endif %}>
+                        Select athlete
+                    </option>
+                    {% for athlete in athletes %}
+                        <option value="{{ athlete.id }}"
+                            {% if athlete_one_id == athlete.id %}selected{% endif %}>
+                            {{ athlete.name }}
+                        </option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <div class="col-md-4">
+                <label class="form-label fw-semibold">Athlete Two</label>
+                <select name="athlete_two_id" class="form-select">
+                    <option value="" {% if not athlete_two_id %}selected{% endif %}>
+                        Select athlete
+                    </option>
+                    {% for athlete in athletes %}
+                        <option value="{{ athlete.id }}"
+                            {% if athlete_two_id == athlete.id %}selected{% endif %}>
+                            {{ athlete.name }}
+                        </option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <div class="col-md-3">
+                <label class="form-label fw-semibold">Event</label>
+                <select name="event" class="form-select">
+                    <option value="" {% if not selected_event %}selected{% endif %}>
+                        Select event
+                    </option>
+                    {% for event in events %}
+                        <option value="{{ event }}"
+                            {% if selected_event == event %}selected{% endif %}>
+                            {{ event|title }}
+                        </option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <div class="col-md-1 d-grid">
+                <button type="submit" class="btn btn-dark">
+                    View
+                </button>
+            </div>
+        </div>
+    </div>
+</form>
+
+{% if athlete_one and athlete_two and selected_event %}
+
+    <div class="mb-4">
+        <h2 class="fw-bold">{{ athlete_one.name }} vs {{ athlete_two.name }}</h2>
+        <p class="text-muted mb-0">
+            Event: {{ selected_event|title }}
+        </p>
+    </div>
+
+    {% if athlete_one.gender != athlete_two.gender %}
+        <div class="alert alert-warning">
+            These athletes are not the same gender. For cleaner comparisons, choose athletes from the same gender.
+        </div>
+    {% endif %}
+
+    <div class="row g-4 mb-4">
+        <div class="col-lg-6">
+            <div class="card shadow-sm border-0 h-100">
+                <div class="card-body">
+                    <h3 class="fw-bold">{{ athlete_one.name }}</h3>
+
+                    {% if athlete_one_summary %}
+                        <div class="row g-3 mt-2">
+                            <div class="col-md-6">
+                                <p class="text-muted mb-1">Total Performances</p>
+                                <h4 class="fw-bold">{{ athlete_one_summary.total_performances }}</h4>
+                            </div>
+                            <div class="col-md-6">
+                                <p class="text-muted mb-1">Current PR</p>
+                                <h4 class="fw-bold">{{ athlete_one_summary.current_prs[selected_event] or "N/A" }}</h4>
+                            </div>
+                            <div class="col-md-6">
+                                <p class="text-muted mb-1">Total PRs</p>
+                                <h4 class="fw-bold">{{ athlete_one_summary.total_prs }}</h4>
+                            </div>
+                            <div class="col-md-6">
+                                <p class="text-muted mb-1">Medals</p>
+                                <h4 class="fw-bold">{{ athlete_one_summary.total_medal_count }}</h4>
+                            </div>
+                        </div>
+                    {% else %}
+                        <div class="alert alert-info mt-3">
+                            No summary data available for this athlete/event.
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-6">
+            <div class="card shadow-sm border-0 h-100">
+                <div class="card-body">
+                    <h3 class="fw-bold">{{ athlete_two.name }}</h3>
+
+                    {% if athlete_two_summary %}
+                        <div class="row g-3 mt-2">
+                            <div class="col-md-6">
+                                <p class="text-muted mb-1">Total Performances</p>
+                                <h4 class="fw-bold">{{ athlete_two_summary.total_performances }}</h4>
+                            </div>
+                            <div class="col-md-6">
+                                <p class="text-muted mb-1">Current PR</p>
+                                <h4 class="fw-bold">{{ athlete_two_summary.current_prs[selected_event] or "N/A" }}</h4>
+                            </div>
+                            <div class="col-md-6">
+                                <p class="text-muted mb-1">Total PRs</p>
+                                <h4 class="fw-bold">{{ athlete_two_summary.total_prs }}</h4>
+                            </div>
+                            <div class="col-md-6">
+                                <p class="text-muted mb-1">Medals</p>
+                                <h4 class="fw-bold">{{ athlete_two_summary.total_medal_count }}</h4>
+                            </div>
+                        </div>
+                    {% else %}
+                        <div class="alert alert-info mt-3">
+                            No summary data available for this athlete/event.
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+
+    {% if combined_progression_chart %}
+        <div class="card shadow-sm border-0 mb-4">
+            <div class="card-body">
+                <h3 class="fw-bold">Combined Progression</h3>
+                <p class="text-muted">
+                    Side-by-side progression trend for {{ selected_event|title }}.
+                </p>
+                {{ combined_progression_chart|safe }}
+            </div>
+        </div>
+    {% endif %}
+
+    <div class="row g-4 mb-4">
+        <div class="col-lg-6">
+            <div class="card shadow-sm border-0 h-100">
+                <div class="card-body">
+                    <h3 class="fw-bold">{{ athlete_one.name }} Performance Chart</h3>
+                    {% if athlete_one_result_chart %}
+                        {{ athlete_one_result_chart|safe }}
+                    {% else %}
+                        <div class="alert alert-warning">
+                            No performance chart available.
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-6">
+            <div class="card shadow-sm border-0 h-100">
+                <div class="card-body">
+                    <h3 class="fw-bold">{{ athlete_two.name }} Performance Chart</h3>
+                    {% if athlete_two_result_chart %}
+                        {{ athlete_two_result_chart|safe }}
+                    {% else %}
+                        <div class="alert alert-warning">
+                            No performance chart available.
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row g-4 mb-4">
+        <div class="col-lg-6">
+            <div class="card shadow-sm border-0 h-100">
+                <div class="card-body">
+                    <h3 class="fw-bold">{{ athlete_one.name }} PR Curve</h3>
+                    {% if athlete_one_pr_chart %}
+                        {{ athlete_one_pr_chart|safe }}
+                    {% else %}
+                        <div class="alert alert-warning">
+                            No PR curve available.
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-6">
+            <div class="card shadow-sm border-0 h-100">
+                <div class="card-body">
+                    <h3 class="fw-bold">{{ athlete_two.name }} PR Curve</h3>
+                    {% if athlete_two_pr_chart %}
+                        {{ athlete_two_pr_chart|safe }}
+                    {% else %}
+                        <div class="alert alert-warning">
+                            No PR curve available.
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row g-4 mb-4">
+        <div class="col-lg-6">
+            <div class="card shadow-sm border-0 h-100">
+                <div class="card-body">
+                    <h3 class="fw-bold">{{ athlete_one.name }} Medal Count</h3>
+                    {% if athlete_one_medal_chart %}
+                        {{ athlete_one_medal_chart|safe }}
+                    {% else %}
+                        <div class="alert alert-warning">
+                            No medals available.
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-6">
+            <div class="card shadow-sm border-0 h-100">
+                <div class="card-body">
+                    <h3 class="fw-bold">{{ athlete_two.name }} Medal Count</h3>
+                    {% if athlete_two_medal_chart %}
+                        {{ athlete_two_medal_chart|safe }}
+                    {% else %}
+                        <div class="alert alert-warning">
+                            No medals available.
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+
+{% else %}
+    <div class="alert alert-info">
+        Select two athletes and an event to generate a comparison dashboard.
+    </div>
+{% endif %}
+
+{% endif %}
+{% endblock %}
