@@ -13,7 +13,7 @@
         </div>
 
         <div class="form-card auth-card">
-            <form method="POST" action="{{ url_for('register') }}">
+            <form method="POST" action="{{ url_for('auth.register') }}">
                 <div class="form-group">
                     <label class="form-label" for="name">Name</label>
                     <input class="form-control" type="text" id="name" name="name" placeholder="Coach name" required>
@@ -31,7 +31,7 @@
 
                 <div class="form-actions">
                     <button class="btn btn-primary" type="submit">Create Account</button>
-                    <a href="{{ url_for('login') }}" class="btn btn-secondary">Already Have Account</a>
+                    <a href="{{ url_for('auth.login') }}" class="btn btn-secondary">Already Have Account</a>
                 </div>
             </form>
         </div>

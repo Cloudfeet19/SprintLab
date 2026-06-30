@@ -1,5 +1,7 @@
-from database.models import db, AthleteTable, ResultTable
+import pandas as pd
+from database.models import AthleteTable, ResultTable
 from forms.forms import TRACK_EVENTS, FIELD_EVENTS
+from sqlalchemy import select
 from src.features import classify_event, get_season
 
 
@@ -35,8 +37,6 @@ def create_new_athlete(form, current_user):
         athlete_class = form.athlete_class.data,
         user = current_user
     )
-
-    db.session.add(athlete)
 
     return athlete
 
@@ -103,8 +103,8 @@ def get_result_data(result_form, athlete, current_user):
     result = ResultTable()
 
     result.event = result_form.event.data
-    result.athlete = athlete
-    result.user = current_user
+    result.athlete_id = athlete.id
+    result.user_id = current_user.id
     result.grade = result_form.grade.data
     result.raw_result = result_form.result.data
     result.result_in_seconds = result_in_seconds(result_form.result.data, classify_event(str(result_form.event.data)))
@@ -125,3 +125,48 @@ def get_result_data(result_form, athlete, current_user):
     return result
 
 
+def initialize_dataset(db):
+    """
+    Convert a sqlalchemy database table to pandas dataframe
+    """
+    # Gets all results for each athlete in the database
+    rows = db.session.execute(
+        select(AthleteTable, ResultTable)
+        .join(ResultTable, AthleteTable.id == ResultTable.athlete_id)
+    ).all()
+
+    data = []
+
+    for athlete, result in rows:
+        data.append({
+            "athlete_id": athlete.id,
+            "name": athlete.name,
+            "gender": athlete.gender,
+            "grade": result.grade,
+            "athlete_class": athlete.athlete_class,
+            "event": result.event,
+            "raw_result": result.raw_result,
+            "result_in_seconds": result.result_in_seconds,
+            "result_in_inches": result.result_in_inches,
+            "result_in_meters": result.result_in_meters,
+            "wind": result.wind,
+            "placement": result.placement,
+            "date": result.date,
+            "meet": result.meet,
+            "atmosphere": result.atmosphere,
+            "race_type": result.race_type,
+            "season": result.season,
+            "performance_type": result.performance_type,
+        })
+
+    df = pd.DataFrame(data)
+
+    if data: # only clean and add features to the dataframe if there is data
+
+        # Clean Data
+        df = clean_data(df)
+
+        # Add features
+        df = add_features(df)
+
+    return df

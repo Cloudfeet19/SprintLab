@@ -9,7 +9,7 @@
         <p class="text-muted mb-0">Select an athlete and event to view performance insights.</p>
     </div>
 
-    <a href="{{ url_for('add_result') }}" class="btn btn-primary">
+    <a href="{{ url_for('feature.add_result') }}" class="btn btn-primary">
         Add Result
     </a>
 </div>
@@ -21,14 +21,14 @@
             <p class="text-muted">
                 Add your first athlete result to start building performance dashboards.
             </p>
-            <a href="{{ url_for('add_result') }}" class="btn btn-primary btn-lg">
+            <a href="{{ url_for('feature.add_result') }}" class="btn btn-primary btn-lg">
                 Add First Result
             </a>
         </div>
     </div>
 {% else %}
 
-    <form method="GET" action="{{ url_for('athletes_dashboard') }}" class="card shadow-sm border-0 mb-4">
+    <form method="GET" action="{{ url_for('dashboard.athletes_dashboard') }}" class="card shadow-sm border-0 mb-4">
         <div class="card-body">
             <div class="row g-3 align-items-end">
                 <div class="col-md-5">

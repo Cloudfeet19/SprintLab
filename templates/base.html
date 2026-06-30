@@ -12,43 +12,43 @@
 <body>
 <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
     <div class="container">
-        <a class="navbar-brand fw-bold" href="{{ url_for('home') }}">
+        <a class="navbar-brand fw-bold" href="{{ url_for('home.home') }}">
             <img src="{{ url_for('static', filename='images/sprint_lab_img_2.png') }}"
             alt="SprintLab" class="nav-logo">
         </a>
 
         <div class="navbar-nav ms-auto">
             {% if current_user.is_authenticated %}
-                <a href="{{ url_for('home') }}"
+                <a href="{{ url_for('home.home') }}"
                     class="nav-pill {% if request.endpoint == 'home' %}active{% endif %}">
                     Home
                 </a>
-                <a href="{{ url_for('add_result') }}"
+                <a href="{{ url_for('feature.add_result') }}"
                     class="nav-pill {% if request.endpoint == 'add_result' %}active{% endif %}">
                     Add Result
                 </a>
-                <a href="{{ url_for('athletes_dashboard') }}"
+                <a href="{{ url_for('dashboard.athletes_dashboard') }}"
                     class="nav-pill {% if request.endpoint == 'athletes_dashboard' %}active{% endif %}">
                     Athlete Dashboard
                 </a>
-                <a href="{{ url_for('event_dashboard') }}"
+                <a href="{{ url_for('dashboard.event_dashboard') }}"
                     class="nav-pill {% if request.endpoint == 'event_dashboard' %}active{% endif %}">
                     Event Dashboard
                 </a>
-                <a href="{{ url_for('compare') }}"
+                <a href="{{ url_for('dashboard.compare') }}"
                     class="nav-pill {% if request.endpoint == 'compare' %}active{% endif %}">
                     Compare
                 </a>
-                <a href="{{ url_for('logout') }}"
+                <a href="{{ url_for('auth.logout') }}"
                     class="nav-pill logout">
                     Logout
                 </a>
             {% else %}
-                <a href="{{ url_for('login') }}"
+                <a href="{{ url_for('auth.login') }}"
                     class="nav-pill {% if request.endpoint == 'login' %}active{% endif %}">
                     Login
                 </a>
-                <a href="{{ url_for('register') }}"
+                <a href="{{ url_for('auth.register') }}"
                     class="nav-pill {% if request.endpoint == 'register' %}active{% endif %}">
                     Register
                 </a>

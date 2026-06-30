@@ -25,7 +25,7 @@
         </div>
 
         <div class="form-card auth-card">
-            <form method="POST" action="{{ url_for('login') }}">
+            <form method="POST" action="{{ url_for('auth.login') }}">
                 <div class="form-group">
                     <label class="form-label" for="email">Email</label>
                     <input class="form-control" type="email" id="email" name="email" placeholder="coach@email.com" required>
@@ -38,7 +38,7 @@
 
                 <div class="form-actions">
                     <button class="btn btn-primary" type="submit">Log In</button>
-                    <a href="{{ url_for('register') }}" class="btn btn-secondary">Create Account</a>
+                    <a href="{{ url_for('auth.register') }}" class="btn btn-secondary">Create Account</a>
                 </div>
             </form>
         </div>

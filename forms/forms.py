@@ -26,7 +26,7 @@ class ResultForm(FlaskForm):
     placement = IntegerField("Place", validators=[DataRequired()])
     date = DateField("Date", format="%Y-%m-%d", validators=[DataRequired()])
     meet = StringField("Meet", validators=[DataRequired()])
-    atmosphere = SelectField("Atmosphere", choices=["Indoor", "Outdoor"], validators=[DataRequired()])
+    atmosphere = SelectField("Atmosphere", choices=["Outdoor", "Indoor"], validators=[DataRequired()])
     race_type = SelectField("Result Type", choices=["Finals", "Prelims"], validators=[DataRequired()])
     performance_type = SelectField(
         "Performance Type",

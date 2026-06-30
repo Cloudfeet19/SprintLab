@@ -261,7 +261,6 @@ def event_medal_count_chart(df: pd.DataFrame, event: str) -> px.bar:
 
     return medal_chart
 
-
 def coach_event_rankings_chart(ranked_events_df: pd.DataFrame) -> px.bar:
     """
     :param ranked_events_df: dataset with the average placement per event
