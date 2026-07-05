@@ -1,7 +1,7 @@
 import pandas as pd
 from sqlalchemy import select
 
-from database.models import db, AthleteTable, ResultTable
+from database.models import AthleteTable, ResultTable
 from src.cleaning import clean_data
 from src.features import add_features
 
