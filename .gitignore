@@ -10,6 +10,7 @@ data/Real_World_SprintLab_Data.csv
 notebooks/Track_&_Field_Statistical_Analysis.ipynb
 /practice_forms.py
 /playground.py
-/static
+/static/images/sprint_lab_img.png
+/static/images/sprint_lab_img_2.png
 
 
