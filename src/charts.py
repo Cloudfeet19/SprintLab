@@ -2,6 +2,21 @@ import pandas as pd
 import plotly.express as px
 from forms.forms import TRACK_EVENTS, FIELD_EVENTS
 
+SPRINTLAB_COLORS = {
+    "background": "#0B1120",
+    "card": "#111827",
+    "grid": "#2A3444",
+    "text": "#E5E7EB",
+
+    "primary": "#38BDF8",
+    "secondary": "#06B6D4",
+
+    "success": "#22C55E",
+    "warning": "#FBBF24",
+    "danger": "#EF4444",
+    "purple": "#A78BFA"
+}
+
 def style_sprintlab_chart(chart):
     """
     Applies SprintLab dashboard styling to Plotly charts.
@@ -60,13 +75,17 @@ def reconfigure_sizing(chart, chart_type):
     """
     chart.update_layout(
         height=450,
-        width=450,
         autosize=True,
         margin=dict(l=40, r=40, t=30, b=40),
         title_font_size=12,
-        plot_bgcolor="rgba(0, 0, 0, 0)",
-        paper_bgcolor="#F7E7CE"
+        plot_bgcolor="#111827",
+        paper_bgcolor="#0B1120",
+        font=dict(color="#D1D5DB"),
+        title={"font" : { "color" : "#F8FAFC"}}
     )
+
+    chart.update_xaxes(showgrid=True, gridwidth=1, gridcolor='#2A3444')
+    chart.update_yaxes(showgrid=True, gridwidth=2, gridcolor='#2A3444')
 
     if chart_type == "line":
         chart.update_traces(line_shape='spline', line_smoothing=0.5, marker=dict(size=4))

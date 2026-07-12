@@ -37,8 +37,6 @@ def add_result():
                     AthleteTable, selected_athlete_id
                 )
 
-            print(athlete.id, athlete.name)
-
             if athlete is None:
                 flash("That athlete no longer exists. Please select another athlete.", "error")
                 return redirect(url_for("feature.add_result"))

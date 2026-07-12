@@ -598,7 +598,10 @@ td,
 .nav-logo {
     height: auto;
     width: 250px;
-    display: block
+    display: block;
+    border-radius: 50%;
+    overflow: hidden;
+    box-shadow: 0 0 18px rgba(44, 171, 255, .18);
 }
 
 .navbar-brand {

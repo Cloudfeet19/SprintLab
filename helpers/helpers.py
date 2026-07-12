@@ -53,7 +53,10 @@ def result_in_seconds(result:str, event_type:str) -> float:
 def results_in_inches(result:str, event_type: str) -> float:
     if event_type == "track": return None
 
-    result = result.split("-")
+    if "-" in result:
+        result = result.split("-")
+    elif "'" in result:
+        result = result.split("'")
 
     total_inches = (float(result[0]) * 12) + float(result[1])
 

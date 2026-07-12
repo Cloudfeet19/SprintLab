@@ -8,7 +8,6 @@ auth_bp = Blueprint("auth", __name__)
 
 @auth_bp.route('/register', methods=["GET", "POST"])
 def register():
-    print(request.method)
     if request.method == "POST":
         email = request.form.get("email")
         user = db.session.execute(db.select(UserTable).where(UserTable.email == email)).scalar_one_or_none()
@@ -30,8 +29,7 @@ def register():
         login_user(new_user)
         return redirect(url_for("home.home"))
     else:
-        print(request.method)
-    return render_template("register.html", logged_in=current_user.is_authenticated)
+        return render_template("register.html", logged_in=current_user.is_authenticated)
 
 @auth_bp.route('/login', methods=["GET", "POST"])
 def login():
